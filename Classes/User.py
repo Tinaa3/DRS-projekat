@@ -14,9 +14,9 @@ class User(db.Model):
     address = db.Column(db.String(length=30), nullable = False)
     city = db.Column(db.String(length=30), nullable = False)
     country = db.Column(db.String(length=30), nullable = False)
-    phoneNumber = db.Column(db.String(length=30), nullable = False)
-    email = db.Column(db.String(length=30), nullable = False)
-    password = db.Column(db.String(length=30), nullable = False)
+    phoneNumber = db.Column(db.String(length=10), nullable = False)
+    email = db.Column(db.String(length=50), nullable = False, primary_key=True, unique=True)
+    password = db.Column(db.String(length=50), nullable = False)
 
     def __repr__(self):
         return f"User('{self.name}', '{self.lastname}', {self.address}, '{self.city}', '{self.country}', '{self.phoneNumber}', '{self.email}', '{self.password}')"
