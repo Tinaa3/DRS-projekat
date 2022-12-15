@@ -1,12 +1,12 @@
 import Classes.User as User
 
 class Transaction(User.db.Model):
-    sender=User.db.Column(User.db.String(length=30), nullablel=False)
-    recipient=User.db.Column(User.db.String(length=30), nullablel=False)
-    amount=User.db.Column(User.db.String(length=30), nullablel=False)
-    randomInt=User.db.Column(User.db.Integer, nullablel=False)
-    state=User.db.Column(User.db.String(length=30), nullablel=False)
-    hashId=User.db.Column(User.db.Integer, nullablel=False, primary_key=True)
+    sender=User.db.Column(User.db.String(length=30), nullable=False)
+    recipient=User.db.Column(User.db.String(length=30), nullable=False)
+    amount=User.db.Column(User.db.String(length=30), nullable=False)
+    randomInt=User.db.Column(User.db.Integer, nullable=False)
+    state=User.db.Column(User.db.String(length=30), nullable=False)
+    hashId=User.db.Column(User.db.Integer, nullable=False, primary_key=True)
 
     def __repr__(self):
         return f"Transaction('{self.sender}', '{self.recipient}', '{self.amount}', '{self.randomInt}', '{self.cardNum}', '{self.state}', '{self.hashId}')"
