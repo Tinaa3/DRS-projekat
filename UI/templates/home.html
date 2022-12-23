@@ -22,7 +22,7 @@
   
   .box-form {
     margin: 0 auto;
-    width: 80%;
+    width: 90%;
     background: #FFFFFF;
     border-radius: 10px;
     overflow: hidden;
@@ -170,9 +170,9 @@
 	
 		<div class="right">
 		<h5>Login</h5>
-		<p>Don't have an account? <a href="#">Create Your Account</a> it takes less than a minute</p>
+		<p>Don't have an account? <a href="{{ url_for('register_page') }}">Create Your Account</a> it takes less than a minute</p>
 		<div class="inputs">
-			<input type="text" placeholder="user name">
+			<input type="text" placeholder="email">
 			<br>
 			<input type="password" placeholder="password">
 		</div>
