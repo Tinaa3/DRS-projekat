@@ -262,7 +262,8 @@
     <section class="signup">
       <div class="container">
         <div class="signup-content">
-          <form method="post" class="form-register">
+          <form method="POST" class="form-register form-signin">
+            {{ form.hidden_tag() }}
             <h2>REGISTRATION</h2>
             {% block content %}
 
