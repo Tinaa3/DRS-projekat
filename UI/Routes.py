@@ -43,3 +43,7 @@ def register_page():
 @app.route('/profile')
 def profile_page():
     return render_template('profile.html')
+
+@app.route('/store')
+def store_page():
+    return render_template('store.html')
