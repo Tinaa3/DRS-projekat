@@ -1,6 +1,6 @@
 from UI import app, db
 from flask import render_template, redirect, url_for, flash, request
-from Classes.forms import RegisterForm, LoginForm
+from Classes.forms import RegisterForm, LoginForm, EditForm
 from Classes.User import User
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, logout_user, login_required, current_user
@@ -50,3 +50,8 @@ def profile_page():
 @app.route('/store')
 def store_page():
     return render_template('store.html')
+
+@app.route('/editprofile')
+def edit_page():
+    form = EditForm()
+    return render_template('editProfile.html', form=form)
