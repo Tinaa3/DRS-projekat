@@ -1,22 +1,15 @@
 import bcrypt
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask
-from UI import db, login_manager
+from UI import db
 from flask_login import UserMixin
-
-
-
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(int(user_id))
 
-
-class User(db.Model):
+class User(UserMixin, db.Model):
     #id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(length=30), nullable = False)
     lastname = db.Column(db.String(length=30), nullable = False)

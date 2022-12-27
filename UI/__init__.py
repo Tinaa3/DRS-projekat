@@ -8,7 +8,14 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SECRET_KEY']='73996d0dcd212694ba3e8d39'
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
-login_manager = LoginManager(app)
+login_manager = LoginManager()
+login_manager.login_view = 'app.login'
+login_manager.init_app(app)
+
 
 from UI import Routes
 from Classes import Card, User, Transaction
+
+@login_manager.user_loader
+def load_user(email):
+    return User.query.get(email)
