@@ -284,10 +284,11 @@ list-type-ulli {
     <div class="topnav">
   <a class="active" href="{{url_for('home_page')}}">Log out</a>
   <a href="{{url_for('store_page')}}">Store</a>
-  <a href="#">Edit profile</a>
+  {% block bar %}
+  
+  {% endblock %}
 </div>
 <form method="POST" class="form-register form-signin">
-  {{ form.hidden_tag() }}
 {% block profile %}
 
 {% endblock %}
