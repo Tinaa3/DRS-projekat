@@ -34,7 +34,7 @@ def register_page():
                                 password=form.password1.data)
         db.session.add(user_to_create)
         db.session.commit()
-        login_user(user_to_create)
+        #login_user(user_to_create)
         flash(f'Account created successufuly! You are now logged in as {user_to_create.name}', category='success')
         return redirect(url_for('profile_page'))
     if form.errors != {}:
@@ -43,7 +43,7 @@ def register_page():
     return render_template('register.html', form=form)
 
 @app.route('/profile')
-@login_required
+#@login_required
 def profile_page():
     return render_template('profile.html')
 
