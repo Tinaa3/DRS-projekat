@@ -1,13 +1,23 @@
+import bcrypt
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask
-from UI import db
+from UI import db, login_manager
+from flask_login import UserMixin
+
+
+
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
 
 class User(db.Model):
+    #id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(length=30), nullable = False)
     lastname = db.Column(db.String(length=30), nullable = False)
     address = db.Column(db.String(length=30), nullable = False)
@@ -16,6 +26,8 @@ class User(db.Model):
     phoneNumber = db.Column(db.String(length=10), nullable = False)
     email = db.Column(db.String(length=50), nullable = False, primary_key=True, unique=True)
     password = db.Column(db.String(length=50), nullable = False)
+
+   
 
     def __repr__(self):
         return f"User('{self.name}', '{self.lastname}', {self.address}, '{self.city}', '{self.country}', '{self.phoneNumber}', '{self.email}', '{self.password}')"
@@ -30,14 +42,15 @@ class User(db.Model):
         self.email = email
         self.password = password
 
-def read(emailAddress):
-    return User.query.filter_by(email=emailAddress).first()
+#def read(emailAddress):
+ #   return User.query.filter_by(email=emailAddress).first()
 
-def add(newUser, flag):
-    if flag:
-        db.session.add(newUser)
-    db.session.commit()
+#def add(newUser, flag):
+#    if flag:
+ #       db.session.add(newUser)
+  #  db.session.commit()
 
-def delete(emailAddress):
-    User.query.filter_by(email=emailAddress).delete()
-    return
+#def delete(emailAddress):
+ #   User.query.filter_by(email=emailAddress).delete()
+  #  return
+
