@@ -20,6 +20,15 @@ class LoginForm(FlaskForm):
     password = PasswordField(label='Password', validators=[DataRequired()])
     submit = SubmitField(label='Login')
 
-
+class EditForm(FlaskForm):
+    name=StringField(label='Name', validators=[Length(min=2, max=30)])
+    lastname=StringField(label='Lastname', validators=[Length(min=2, max=30)])
+    address=StringField(label='Address')
+    city=StringField(label='City')
+    country = StringField(label='Country')
+    phoneNumber = IntegerField(label='Phone Number')
+    password1 = PasswordField(label='password1')
+    password2 = PasswordField(label='password2')
+    submit = SubmitField(label='Edit Account')
 
 
