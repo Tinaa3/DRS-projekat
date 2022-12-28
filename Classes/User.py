@@ -9,41 +9,24 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 
-class User(UserMixin, db.Model):
-    #id = db.Column(db.Integer(), primary_key=True)
+class User(db.Model, UserMixin):
+    id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(length=30), nullable = False)
     lastname = db.Column(db.String(length=30), nullable = False)
     address = db.Column(db.String(length=30), nullable = False)
     city = db.Column(db.String(length=30), nullable = False)
     country = db.Column(db.String(length=30), nullable = False)
     phoneNumber = db.Column(db.String(length=10), nullable = False)
-    email = db.Column(db.String(length=50), nullable = False, primary_key=True, unique=True)
-    password = db.Column(db.String(length=50), nullable = False)
+    email = db.Column(db.String(length=50), nullable = False, unique=True)
+    password_hash = db.Column(db.String(length=60), nullable=False)
 
-   
+    @property
+    def password(self):
+        return self.password
 
-    def __repr__(self):
-        return f"User('{self.name}', '{self.lastname}', {self.address}, '{self.city}', '{self.country}', '{self.phoneNumber}', '{self.email}', '{self.password}')"
-
-    def __init__(self, name, lastname, address, city, country, phoneNumber, email, password):
-        self.name = name
-        self.lastname = lastname
-        self.address = address
-        self.city = city
-        self.country = country
-        self.phoneNumber = phoneNumber
-        self.email = email
-        self.password = password
-
-#def read(emailAddress):
- #   return User.query.filter_by(email=emailAddress).first()
-
-#def add(newUser, flag):
-#    if flag:
- #       db.session.add(newUser)
-  #  db.session.commit()
-
-#def delete(emailAddress):
- #   User.query.filter_by(email=emailAddress).delete()
-  #  return
-
+    #@password.setter
+    #def password(self, plain_text_password):
+     #   self.password_hash = bcrypt.generate_password_hash(plain_text_password).decode('utf-8')
+    
+    #def check_password_correction(self, attempted_password):
+     #   return bcrypt.check_password_hash(self.password_hash, attempted_password)
