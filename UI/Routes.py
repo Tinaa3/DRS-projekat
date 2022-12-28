@@ -31,9 +31,9 @@ def home_page():
         
         user = User.query.filter_by(email=email).first()
         
-        if not user:
-            flash('Please sign up before!')
-            return redirect(url_for('register_page'))
+        if not user or (user.password_hash != password):
+            flash('Please enter valid login information!')
+            return redirect(url_for('home_page'))
        
          # if the user 
                #doesn't exist or password is wrong, reload the page

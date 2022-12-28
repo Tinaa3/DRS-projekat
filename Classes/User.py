@@ -20,9 +20,9 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(length=50), nullable = False, unique=True)
     password_hash = db.Column(db.String(length=60), nullable=False)
 
-    @property
-    def password(self):
-        return self.password
+    #@property
+    #def password(self):
+    #    return self.password
 
     #@password.setter
     #def password(self, plain_text_password):
