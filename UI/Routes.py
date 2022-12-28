@@ -4,21 +4,46 @@ from Classes.forms import RegisterForm, LoginForm, EditForm
 from Classes.User import User
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, logout_user, login_required, current_user
+from flask_login import LoginManager
 
-@app.route('/')
-@app.route('/home', methods=['POST'])
+login_manager = LoginManager() # Create a Login Manager instance
+login_manager.login_view = 'home_page' # define the redirection 
+                         # path when login required and we attempt 
+                         # to access without being logged in
+login_manager.init_app(app) # configure it for login
+
+@login_manager.user_loader
+def load_user(user_id): #reload user object from the user ID 
+                            #stored in the session
+        # since the user_id is just the primary key of our user 
+        # table, use it in the query for the user
+    return User.query.get(int(user_id))
+
+@app.route('/', methods=['GET','POST'])
+@app.route('/home', methods=['GET','POST'])
 def home_page():
-    form = LoginForm()
-    email = request.form.get('email')
-    password = request.form.get('password')
-    user = User.query.filter_by(email=email).first()
-
-    if not user or not check_password_hash(user.password, password):
-        flash('Please check your login details and try again!')
-        return render_template('home.html', form=form)
-
-    login_user(user)    
-    return redirect(url_for('profile_page'))
+    if request.method=='GET': # if the request is a GET we return the login page
+        return render_template('home.html')
+    else: # if the request is POST the we check if the user exist 
+          # and with te right password
+        email = request.form.get('email')
+        password = request.form.get('password')
+        
+        user = User.query.filter_by(email=email).first()
+        # check if the user actually exists
+        # take the user-supplied password, hash it, and compare it     
+        # to the hashed password in the database
+        if not user:
+            flash('Please sign up before!')
+            return redirect(url_for('register_page'))
+       
+         # if the user 
+               #doesn't exist or password is wrong, reload the page
+        # if the above check passes, then we know the user has the 
+        # right credentials
+        login_user(user)
+        flash(f'You are now logged in as {user.name}')
+        return redirect(url_for('profile_page'))
     
 @app.route('/register', methods=['GET', 'POST'])
 def register_page():
@@ -42,7 +67,7 @@ def register_page():
             flash(f'There was an error with creating a user: {err_msg}', category='danger')
     return render_template('register.html', form=form)
 
-@app.route('/profile')
+@app.route('/profile', methods=['GET','POST'])
 @login_required
 def profile_page():
     return render_template('profile.html')
@@ -55,3 +80,9 @@ def store_page():
 def edit_page():
     form = EditForm()
     return render_template('editProfile.html', form=form)
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('home_page'))
