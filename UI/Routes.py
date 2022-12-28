@@ -30,9 +30,7 @@ def home_page():
         password = request.form.get('password')
         
         user = User.query.filter_by(email=email).first()
-        # check if the user actually exists
-        # take the user-supplied password, hash it, and compare it     
-        # to the hashed password in the database
+        
         if not user:
             flash('Please sign up before!')
             return redirect(url_for('register_page'))
