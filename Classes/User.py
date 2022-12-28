@@ -4,10 +4,9 @@ from flask import Flask
 from UI import db
 from flask_login import UserMixin
 
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
+# app = Flask(__name__)
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer(), primary_key=True)

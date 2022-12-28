@@ -1,8 +1,9 @@
-import apikey
 import requests
 
+key = '87e27720-92d8-4e1a-814f-570061a395ec'
+
 headers = {
-    'X-CMC_PRO_API_KEY' : apikey.key,
+    'X-CMC_PRO_API_KEY' : key,
     'Accepts' : 'application/json'
 }
 
