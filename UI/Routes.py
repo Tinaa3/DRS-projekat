@@ -19,29 +19,34 @@ def load_user(user_id): #reload user object from the user ID
         # table, use it in the query for the user
     return User.query.get(int(user_id))
 
-@app.route('/', methods=['GET','POST'])
-@app.route('/home', methods=['GET','POST'])
+@app.route('/', methods=['GET'])
+@app.route('/home', methods=['GET'])
 def home_page():
-    if request.method=='GET': # if the request is a GET we return the login page
-        return render_template('home.html')
-    else: # if the request is POST the we check if the user exist 
+    #if request.method=='GET': # if the request is a GET we return the login page
+    return render_template('home.html')
+
+
+@app.route('/', methods=['POST'])   
+@app.route('/home', methods=['POST'])   
+def login_page():  
+    #else: # if the request is POST the we check if the user exist 
           # and with te right password
-        email = request.form.get('email')
-        password = request.form.get('password')
-        
-        user = User.query.filter_by(email=email).first()
-        
-        if not user or (user.password_hash != password):
-            flash('Please enter valid login information!')
-            return redirect(url_for('home_page'))
-       
-         # if the user 
-               #doesn't exist or password is wrong, reload the page
-        # if the above check passes, then we know the user has the 
-        # right credentials
-        login_user(user)
-        flash(f'You are now logged in as {user.name}')
-        return redirect(url_for('profile_page'))
+    email = request.form.get('email')
+    password = request.form.get('password')
+    
+    user = User.query.filter_by(email=email).first()
+    
+    if not user or (user.password_hash != password):
+        flash('Please enter valid login information!')
+        return redirect(url_for('home_page'))
+    
+        # if the user 
+            #doesn't exist or password is wrong, reload the page
+    # if the above check passes, then we know the user has the 
+    # right credentials
+    login_user(user)
+    flash(f'You are now logged in as {user.name}')
+    return redirect(url_for('profile_page'))
     
 @app.route('/register', methods=['GET', 'POST'])
 def register_page():
