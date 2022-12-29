@@ -78,25 +78,25 @@ def store_page():
 @login_required
 def edit_page():
     form = EditForm()
-    if form.is_submitted():
-        userUpdate = User.query.filter_by(id=current_user.id).first()
-        if(form.name.data != ""):
-            userUpdate.name = form.name.data
-        if(form.lastname.data != ""):
-            userUpdate.lastname = form.lastname.data
-        if(form.address.data != ""):
-            userUpdate.address = form.address.data
-        if(form.city.data != ""):
-            userUpdate.city = form.city.data
-        if(form.country.data != ""):
-            userUpdate.country = form.country.data
-        if(form.country.data != ""):
-            userUpdate.phoneNumber = form.phoneNumber.data
-        if(form.password1.data == form.password2.data and form.password1.data != "" and form.password2.data != ""):
-            userUpdate.password_hash = form.password1.data
-        db.session.commit()
-        return render_template('profile.html')
-    return render_template('editProfile.html', form=form)
+    if form.is_submitted() is False:
+        return render_template('editProfile.html', form=form)
+    userUpdate = User.query.filter_by(id=current_user.id).first()
+    if(form.name.data != ""):
+        userUpdate.name = form.name.data
+    if(form.lastname.data != ""):
+        userUpdate.lastname = form.lastname.data
+    if(form.address.data != ""):
+        userUpdate.address = form.address.data
+    if(form.city.data != ""):
+        userUpdate.city = form.city.data
+    if(form.country.data != ""):
+        userUpdate.country = form.country.data
+    if(form.country.data != ""):
+        userUpdate.phoneNumber = form.phoneNumber.data
+    if(form.password1.data == form.password2.data and form.password1.data != "" and form.password2.data != ""):
+        userUpdate.password_hash = form.password1.data
+    db.session.commit()
+    return render_template('profile.html')
 
 @app.route('/logout')
 @login_required
