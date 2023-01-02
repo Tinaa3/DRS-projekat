@@ -8,5 +8,6 @@ class Card(db.Model):
     cardNum = db.Column(db.Integer(), nullable = False)
     expDate = db.Column(db.String(length=8), nullable = False)
     secCode = db.Column(db.Integer(), nullable = False)
+    amount = db.Column(db.Integer(), nullable = False)
     owner = db.Column(db.Integer(), db.ForeignKey('user.id'))
     
