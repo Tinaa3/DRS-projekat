@@ -1,7 +1,8 @@
 from UI import app, db
 from flask import render_template, redirect, url_for, flash, request
-from Classes.forms import RegisterForm, LoginForm, EditForm
+from Classes.forms import RegisterForm, LoginForm, EditForm, CardForm
 from Classes.User import User
+from Classes.Card import Card
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, logout_user, login_required, current_user
 from flask_login import LoginManager
@@ -75,9 +76,22 @@ def register_page():
 def profile_page():
     return render_template('profile.html')
 
-@app.route('/store')
-def store_page():
-    return render_template('store.html')
+@app.route('/card', methods=['GET','POST'])
+@login_required
+def card_page():
+    form = CardForm()
+    if request.method=='POST':
+        card = Card(name=form.name.data,
+                                cardNum=form.cardnum.data,
+                                expDate=form.expdate.data,
+                                secCode=form.seccode.data,
+                                amount=form.amount.data,
+                                owner=current_user.id)
+        db.session.add(card)
+        db.session.commit()
+        
+        return redirect(url_for('card_page'))
+    return render_template('card.html', form=form)
 
 @app.route('/editprofile', methods=["GET", "POST"])
 @login_required

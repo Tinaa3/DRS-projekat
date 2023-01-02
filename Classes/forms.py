@@ -20,6 +20,14 @@ class LoginForm(FlaskForm):
     password = PasswordField(label='Password', validators=[DataRequired()])
     submit = SubmitField(label='Login')
 
+class CardForm(FlaskForm):
+    name = StringField(label='name', validators=[Length(max=30), DataRequired()])
+    cardnum= IntegerField(label='cardnum', validators=[Length(min=16,max=16), DataRequired()])
+    expdate = IntegerField(label='expdate', validators=[Length(min=4,max=4), DataRequired()])
+    seccode = IntegerField(label='seccode', validators=[Length(min=3,max=3), DataRequired()])
+    amount = IntegerField(label='amount', validators=[Length(max=7), DataRequired()])
+    submit = SubmitField(label='Submit')
+
 class EditForm(FlaskForm):
     name=StringField(label='Name', validators=[Length(min=2, max=30)])
     lastname=StringField(label='Lastname', validators=[Length(min=2, max=30)])
@@ -30,5 +38,3 @@ class EditForm(FlaskForm):
     password1 = PasswordField(label='password1')
     password2 = PasswordField(label='password2')
     submit = SubmitField(label='Edit Account')
-
-

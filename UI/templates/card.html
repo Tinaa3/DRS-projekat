@@ -1,0 +1,46 @@
+{% extends 'base.html'%}
+{% block bar %}
+<a href="{{url_for('profile_page')}}">Profile</a>
+<a href="{{url_for('edit_page')}}">Edit profile</a>
+{% endblock %}
+
+{% block card %}
+
+
+    <form method="post">
+    <div class="container">
+    
+        <div class= "signup-content">
+            <h2>Add a credit card</h2>
+            <div class="form-group">
+                
+                {{form.name(class = "form-control form-input", 
+                placeholder = "Cardholder name")}}
+            </div>
+            <div class="form-group">
+                <br/>
+                {{form.cardnum(class = "form-control form-input", 
+                placeholder = "Card number")}}
+            </div>
+            <div class="form-group">
+                <br/>
+                {{form.expdate(class = "form-control form-input", 
+                placeholder = "Expiration date")}}
+            </div>
+            <div class="form-group">
+                <br/>
+                {{form.seccode(class = "form-control form-input", 
+                placeholder = "Security code")}}
+            </div>
+            <div class="form-group">
+                <br/>
+                {{form.amount(class = "form-control form-input", 
+                placeholder = "Money amount")}}
+            </div>
+            <br>
+            {{ form.submit(class='btn btn-lg form-submit') }}
+        </div>
+
+    </form>
+    </div>
+{% endblock %}

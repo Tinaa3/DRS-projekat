@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <head>
-
+{% block content %}
+{% endblock %}
 </head>
 <style>
 body {
@@ -27,7 +28,17 @@ body {
   text-decoration: none;
   font-size: 17px;
 }
-
+.topnav button {
+  float: right;
+  color: #003ce1;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  border: none;
+  
+  box-shadow: none;
+  font-size: 17px;
+}
 /* Change the color of links on hover */
 .topnav a:hover {
   background-color: rgb(0, 72, 241);
@@ -281,9 +292,12 @@ list-type-ulli {
 
 </style>
 <body>
-    <div class="topnav">
+<div class="topnav">
+    
   <a class="active" href="{{url_for('logout')}}">Log out</a>
-  <a href="{{url_for('store_page')}}">Store</a>
+  
+  <a href="store.html">Store</a>
+  
   {% block bar %}
   
   {% endblock %}
@@ -293,7 +307,8 @@ list-type-ulli {
 
 {% endblock %}
 </form>
-{% block store%}
+{% block card%}
 {% endblock %}
+
 </body>
 </html>
