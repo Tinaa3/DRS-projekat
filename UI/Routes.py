@@ -76,22 +76,27 @@ def register_page():
 def profile_page():
     return render_template('profile.html')
 
-@app.route('/card', methods=['GET','POST'])
+@app.route('/card', methods=['GET', 'POST'])
 @login_required
 def card_page():
     form = CardForm()
-    if request.method=='POST':
+    user_id = current_user.id
+    cards = Card.query.filter_by(owner=user_id).all()
+    num_cards = Card.query.filter_by(owner=user_id).count()
+    if request.method == 'POST':
         card = Card(name=form.name.data,
-                                cardNum=form.cardnum.data,
-                                expDate=form.expdate.data,
-                                secCode=form.seccode.data,
-                                amount=form.amount.data,
-                                owner=current_user.id)
+                    cardNum=form.cardnum.data,
+                    expDate=form.expdate.data,
+                    secCode=form.seccode.data,
+                    amount=form.amount.data,
+                    owner=user_id)
         db.session.add(card)
         db.session.commit()
-        
         return redirect(url_for('card_page'))
-    return render_template('card.html', form=form)
+
+    return render_template('card.html', form=form, cards=cards, num_cards=num_cards)
+
+
 
 @app.route('/editprofile', methods=["GET", "POST"])
 @login_required

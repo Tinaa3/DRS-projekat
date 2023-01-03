@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, EmailField, IntegerField, PasswordField, SubmitField
-from wtforms.validators import Length, EqualTo, Email, DataRequired, ValidationError, Regexp
+from wtforms.validators import Length, EqualTo, Email, DataRequired, ValidationError, Regexp, NumberRange
 from Classes.User import User
 
 class RegisterForm(FlaskForm):
@@ -20,13 +20,14 @@ class LoginForm(FlaskForm):
     password = PasswordField(label='Password', validators=[DataRequired()])
     submit = SubmitField(label='Login')
 
+
 class CardForm(FlaskForm):
-    name = StringField(label='name', validators=[Length(max=30), DataRequired()])
-    cardnum= IntegerField(label='cardnum', validators=[Length(min=16,max=16), DataRequired()])
-    expdate = IntegerField(label='expdate', validators=[Length(min=4,max=4), DataRequired()])
-    seccode = IntegerField(label='seccode', validators=[Length(min=3,max=3), DataRequired()])
-    amount = IntegerField(label='amount', validators=[Length(max=7), DataRequired()])
-    submit = SubmitField(label='Submit')
+    name = StringField('Cardholder name', validators=[DataRequired(), Length(min=15,max=30)])
+    cardnum = StringField('Card number', validators=[DataRequired(), Length(min=13, max=16), Regexp('^[0-9]*$', message='Card number must be numeric')])
+    expdate = StringField('Expiration date', validators=[DataRequired(), Length(min=4,max=4), Regexp('^(0[1-9]|1[0-2])([0-9]{2})$', message='Expiration date must be in the format MMYY')])
+    seccode = IntegerField('Security code', validators=[DataRequired(), NumberRange(min=100, max=999)])
+    amount = IntegerField('Amount', validators=[DataRequired(), Length(min=4, max=8)])
+    submit = SubmitField(label='submit')
 
 class EditForm(FlaskForm):
     name=StringField(label='Name', validators=[Length(min=2, max=30)])

@@ -6,10 +6,18 @@
 
 {% block card %}
 
+<br>
+<div class="shadowbox">
+    <h3 class="pp">You  successfully added {{ num_cards }} credit card/s</h3>
+</div>
 
+{% for error in form.expdate.errors %}
+  <p class="error" style="color: red; font-weight: bold;">{{ error }}</p>
+{% endfor %}
+
+<br>
     <form method="post">
     <div class="container">
-    
         <div class= "signup-content">
             <h2>Add a credit card</h2>
             <div class="form-group">
