@@ -6,10 +6,19 @@
 
 {% block card %}
 
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <div class="notification is-danger" style="color: red;">
+            {{ messages[0] }}<br> 
+        </div>
+    {% endif %}
+    {% endwith %}
+{% for card in cards %}
 <br>
 <div class="shadowbox">
-    <h3 class="pp">You  successfully added {{ num_cards }} credit card/s</h3>
+    <h3 class="pp">You successfully added credit card!!</h3>
 </div>
+{% endfor %}
 
 {% for error in form.expdate.errors %}
   <p class="error" style="color: red; font-weight: bold;">{{ error }}</p>
@@ -31,9 +40,10 @@
                 placeholder = "Card number")}}
             </div>
             <div class="form-group">
-                <br/>
-                {{form.expdate(class = "form-control form-input", 
-                placeholder = "Expiration date")}}
+                <br>
+                <form>
+                    <input type="text" id="expdate" name="expdate" class="form-control form-input" placeholder="Expiration date (MM-YYYY)" pattern="(0[1-9]|1[012])[- /.](20)\d\d" >
+                  </form>                   
             </div>
             <div class="form-group">
                 <br/>
