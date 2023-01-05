@@ -13,4 +13,3 @@ bcrypt = Bcrypt(app)
 
 from UI import Routes
 from Classes.User import  User
-

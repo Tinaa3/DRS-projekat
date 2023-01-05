@@ -1,4 +1,5 @@
-from UI import app
+from UI import app,db
 
 if __name__ == '__main__':
+  
     app.run(debug=True)

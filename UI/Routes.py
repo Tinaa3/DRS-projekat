@@ -127,6 +127,11 @@ def edit_page():
     db.session.commit()
     return render_template('profile.html')
 
+@app.route('/store', methods=['GET','POST'])
+@login_required
+def store_page():
+    return render_template('store.html')
+
 @app.route('/logout')
 @login_required
 def logout():

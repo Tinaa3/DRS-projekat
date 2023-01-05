@@ -1,50 +1,344 @@
-{% extends 'registerbase.html' %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+  </head>
+  <style>
+    list-type-ulli {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+    }
 
-{% block content %}
-    <div class="form-group">      
-        {{form.name(class = "form-control form-input", 
-        placeholder = "Name")}}
+    input,
+    select,
+    textarea {
+      outline: none;
+      appearance: unset !important;
+      -moz-appearance: unset !important;
+      -webkit-appearance: unset !important;
+      -o-appearance: unset !important;
+      -ms-appearance: unset !important;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      appearance: none !important;
+      -moz-appearance: none !important;
+      -webkit-appearance: none !important;
+      -o-appearance: none !important;
+      -ms-appearance: none !important;
+      margin: 0;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: none;
+      box-shadow: none !important;
+      -moz-box-shadow: none !important;
+      -webkit-box-shadow: none !important;
+      -o-box-shadow: none !important;
+      -ms-box-shadow: none !important;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    figure {
+      margin: 0;
+    }
+
+    p {
+      margin-bottom: 0px;
+      font-size: 15px;
+      color: #777;
+    }
+
+    h2 {
+      line-height: 1.66;
+      margin: 0;
+      padding: 0;
+      font-weight: 900;
+      color: #222;
+      font-family: "Montserrat";
+      font-size: 24px;
+      text-transform: uppercase;
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .clear {
+      clear: both;
+    }
+
+    body {
+      font-size: 14px;
+      line-height: 1.8;
+      color: #ffffff;
+      font-weight: 400;
+      font-family: "Montserrat";
+      background-image: linear-gradient(135deg, #fab2ff 10%, #1904e5 100%);
+      width: auto;
+      height: auto;
+
+      background-position: center center;
+      padding: 115px 0;
+    }
+
+    .container {
+      width: 500px;
+
+      margin: 0 auto;
+    }
+
+    .display-flex {
+      justify-content: space-between;
+      -moz-justify-content: space-between;
+      -webkit-justify-content: space-between;
+      -o-justify-content: space-between;
+      -ms-justify-content: space-between;
+      align-items: center;
+      -moz-align-items: center;
+      -webkit-align-items: center;
+      -o-align-items: center;
+      -ms-align-items: center;
+    }
+
+    .display-flex-center {
+      justify-content: center;
+      -moz-justify-content: center;
+      -webkit-justify-content: center;
+      -o-justify-content: center;
+      -ms-justify-content: center;
+      align-items: center;
+      -moz-align-items: center;
+      -webkit-align-items: center;
+      -o-align-items: center;
+      -ms-align-items: center;
+    }
+
+    .position-center {
+      position: auto;
+
+      transform: translate(-50%, -50%);
+      -moz-transform: translate(-50%, -50%);
+      -webkit-transform: translate(-50%, -50%);
+      -o-transform: translate(-50%, -50%);
+      -ms-transform: translate(-50%, -50%);
+    }
+
+    .signup-content {
+      background: #fff;
+      border-radius: 10px;
+      -moz-border-radius: 10px;
+      -webkit-border-radius: 10px;
+      -o-border-radius: 10px;
+      -ms-border-radius: 10px;
+      padding: 50px 85px;
+    }
+
+    .form-group {
+      overflow: hidden;
+    }
+
+    .form-input {
+      width: 100%;
+      border: 1px solid #ebebeb;
+      border-radius: 5px;
+      -moz-border-radius: 5px;
+      -webkit-border-radius: 5px;
+      -o-border-radius: 5px;
+      -ms-border-radius: 5px;
+      padding: 17px 20px;
+      box-sizing: border-box;
+      font-size: 14px;
+      font-weight: 500;
+      color: #222;
+    }
+
+    .form-input::-webkit-input-placeholder {
+      color: #999;
+    }
+
+    .form-input::-moz-placeholder {
+      color: #999;
+    }
+
+    .form-input:-ms-input-placeholder {
+      color: #999;
+    }
+
+    .form-input:-moz-placeholder {
+      color: #999;
+    }
+
+    .form-input::-webkit-input-placeholder {
+      font-weight: 500;
+    }
+
+    .form-input::-moz-placeholder {
+      font-weight: 500;
+    }
+
+    .form-input:-ms-input-placeholder {
+      font-weight: 500;
+    }
+
+    .form-input:-moz-placeholder {
+      font-weight: 500;
+    }
+
+    .form-input:focus {
+      border: 1px solid transparent;
+      -webkit-border-image-source: -webkit-linear-gradient(
+        to right,
+        #1904e5,
+        #fab2ff
+      );
+      -moz-border-image-source: -moz-linear-gradient(
+        to right,
+        #1904e5,
+        #fab2ff
+      );
+      -o-border-image-source: -o-linear-gradient(to right, #1904e5, #fab2ff);
+      border-image-source: linear-gradient(to right, #1904e5, #fab2ff);
+      -webkit-border-image-slice: 1;
+      border-image-slice: 1;
+      border-radius: 5px;
+      -moz-border-radius: 5px;
+      -webkit-border-radius: 5px;
+      -o-border-radius: 5px;
+      -ms-border-radius: 5px;
+      background-origin: border-box;
+      background-clip: content-box, border-box;
+    }
+
+    .form-input:focus::-webkit-input-placeholder {
+      color: #222;
+    }
+
+    .form-input:focus::-moz-placeholder {
+      color: #222;
+    }
+
+    .form-input:focus:-ms-input-placeholder {
+      color: #222;
+    }
+
+    .form-input:focus:-moz-placeholder {
+      color: #222;
+    }
+
+    .form-submit {
+      width: 100%;
+      border-radius: 5px;
+      -moz-border-radius: 5px;
+      -webkit-border-radius: 5px;
+      -o-border-radius: 5px;
+      -ms-border-radius: 5px;
+      padding: 17px 20px;
+      box-sizing: border-box;
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      text-transform: uppercase;
+      border: none;
+      background-image: linear-gradient(135deg, #1904e5, #1904e5 60%);
+    }
+
+    .loginhere {
+      color: #555;
+      font-weight: 500;
+      text-align: center;
+    }
+
+    .loginhere-link {
+      font-weight: 700;
+      color: #222;
+    }
+
+    .field-icon {
+      float: right;
+      margin-right: 17px;
+      margin-top: -32px;
+      position: relative;
+      z-index: 2;
+      color: #555;
+    }
+  </style>
+
+  <body>
+    {% with messages = get_flashed_messages() %} {% if messages %}
+    <div class="notification is-danger">{{ messages[0] }}<br /></div>
+    {% endif %} {% endwith %}
+    <div>
+      <section class="signup">
+        <div class="container">
+          <div class="signup-content">
+            <form method="POST" class="form-register form-signin">
+              {{ form.hidden_tag() }}
+              <h2>REGISTRATION</h2>
+
+              {% block content %}
+              <div class="form-group">
+                {{form.name(class = "form-control form-input", placeholder =
+                "Name")}}
+              </div>
+              <div class="form-group">
+                <br />
+                {{form.lastname(class = "form-control form-input", placeholder =
+                "Lastname")}}
+              </div>
+              <div class="form-group">
+                <br />
+                {{form.address(class = "form-control form-input", placeholder =
+                "Address")}}
+              </div>
+              <div class="form-group">
+                <br />
+                {{form.city(class = "form-control form-input", placeholder =
+                "City")}}
+              </div>
+              <div class="form-group">
+                <br />
+                {{form.country(class = "form-control form-input", placeholder =
+                "Country")}}
+              </div>
+              <div class="form-group">
+                <br />
+                {{form.phoneNumber(class = "form-control form-input",
+                placeholder = "Phone number")}}
+              </div>
+              <div class="form-group">
+                <br />
+                {{form.email(class = "form-control form-input", placeholder =
+                "Email Address")}}
+              </div>
+              <div class="form-group">
+                <br />
+                {{form.password1(class = "form-control form-input", placeholder
+                = "Password")}}
+              </div>
+              <div class="form-group">
+                <br />
+                {{form.password2(class = "form-control form-input", placeholder
+                = "Confirm password")}}
+              </div>
+              <br />
+              {{ form.submit(class='btn btn-lg form-submit') }} {% endblock %}
+            </form>
+            <p class="loginhere">
+              Have already an account?
+              <a href="{{ url_for('home_page') }}" class="loginhere-link"
+                >Login here</a
+              >
+            </p>
+          </div>
+        </div>
+      </section>
     </div>
-    <div class="form-group">
-        <br/>
-        {{form.lastname(class = "form-control form-input", 
-        placeholder = "Lastname")}}
-    </div>
-    <div class="form-group">
-        <br/>
-        {{form.address(class = "form-control form-input", 
-        placeholder = "Address")}}
-    </div>
-    <div class="form-group">
-        <br/>
-        {{form.city(class = "form-control form-input", 
-        placeholder = "City")}}
-    </div>
-    <div class="form-group">
-        <br/>
-        {{form.country(class = "form-control form-input", 
-        placeholder = "Country")}}
-    </div>
-    <div class="form-group">
-        <br/>
-        {{form.phoneNumber(class = "form-control form-input", 
-        placeholder = "Phone number")}}
-    </div>
-    <div class="form-group">
-        <br/>
-        {{form.email(class = "form-control form-input", 
-        placeholder = "Email Address")}}
-    </div>
-    <div class="form-group"> 
-        <br>
-        {{form.password1(class = "form-control form-input",
-        placeholder = "Password")}}
-    </div>
-    <div class="form-group">
-        <br>
-        {{form.password2(class = "form-control form-input", 
-        placeholder = "Confirm password")}}
-    </div>
-    <br>
-    {{ form.submit(class='btn btn-lg form-submit') }}
-{% endblock %}
+  </body>
+</html>
