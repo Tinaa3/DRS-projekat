@@ -1,24 +1,25 @@
-import requests
+from requests import Request, Session
+from requests.exceptions import ConnectionError, Timeout, TooManyRedirects
+import json
 
-key = '87e27720-92d8-4e1a-814f-570061a395ec'
+class Crypto:
+    
+    def get_top_200(self):
 
-headers = {
-    'X-CMC_PRO_API_KEY' : key,
-    'Accepts' : 'application/json'
-}
+        url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest'
+        parameters = {
+          'start':'1',
+          'limit':'200',
+          'convert':'USD'
+        }
+        headers = {
+          'Accepts': 'application/json',
+          'X-CMC_PRO_API_KEY': 'a2725ecf-abca-416b-86e2-89df6b69522b',
+        }
 
-params = {
-    'start' : '1',
-    'limit' : '5',
-    'convert' : 'EUR'
-}
+        session = Session()
+        session.headers.update(headers)
 
-url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest'
-
-json = requests.get(url, params=params, headers=headers).json()
-
-coins = json['data']
-
-def GiveACoin():
-    for x in coins:
-        print(x['symbol'], x['quote']['EUR']['price'])
+        response = session.get(url, params=parameters)
+        data = json.loads(response.text)
+        return data['data']

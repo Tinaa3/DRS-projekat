@@ -4,10 +4,12 @@ from Classes.forms import RegisterForm, LoginForm, EditForm, CardForm
 from Classes.User import User
 from Classes.Card import Card
 from Classes.Coin import Coin
+from Classes.crypto import Crypto
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, logout_user, login_required, current_user
 from flask_login import LoginManager
 
+crypto = Crypto()
 login_manager = LoginManager() # Create a Login Manager instance
 login_manager.login_view = 'home_page' # define the redirection 
                          # path when login required and we attempt 
@@ -131,7 +133,16 @@ def edit_page():
 @app.route('/store', methods=['GET','POST'])
 @login_required
 def store_page():
-    return render_template('store.html')
+    results = crypto.get_top_200()
+    for result in results:
+        result['quote']['USD']['price'] = '$ ' + "{:.2f}".format(result['quote']['USD']['price'])
+         # Create a Coin object for each coin
+        new_coin = Coin(name=result['name'], symbol=result['symbol'], price=result['quote']['USD']['price'])
+        db.session.add(new_coin)
+
+    db.session.commit()
+   
+    return render_template('store.html', results=results)
 
 @app.route('/logout')
 @login_required
