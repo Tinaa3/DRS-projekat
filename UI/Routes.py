@@ -3,6 +3,7 @@ from flask import render_template, redirect, url_for, flash, request
 from Classes.forms import RegisterForm, LoginForm, EditForm, CardForm
 from Classes.User import User
 from Classes.Card import Card
+from Classes.Coin import Coin
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, logout_user, login_required, current_user
 from flask_login import LoginManager
