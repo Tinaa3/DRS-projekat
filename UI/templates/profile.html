@@ -5,10 +5,13 @@
 <a href="{{url_for('card_page')}}">Card</a>
 <a href="{{url_for('store_page')}}">Store</a>
 
+{% if current_user.is_authenticated %}
+    <p>Your current balance: {{ current_user.card.amount }}</p>
+{% endif %}
 
 {% with messages = get_flashed_messages() %}
     {% if messages %}
-        <div class="notification is-danger">
+        <div style="color: rgb(7, 7, 114); font-weight: bold; font-size: x-large;">
             {{ messages[0] }}<br> 
         </div>
     {% endif %}

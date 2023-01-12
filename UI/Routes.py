@@ -1,10 +1,11 @@
 from UI import app, db
 from flask import render_template, redirect, url_for, flash, request
-from Classes.forms import RegisterForm, LoginForm, EditForm, CardForm
+from Classes.forms import RegisterForm, LoginForm, EditForm, CardForm, TransactionForm
 from Classes.User import User
 from Classes.Card import Card
 from Classes.Coin import Coin
 from Classes.crypto import Crypto
+from Classes.Transaction import Transaction
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, logout_user, login_required, current_user
 from flask_login import LoginManager
@@ -49,7 +50,7 @@ def login_page():
     # if the above check passes, then we know the user has the 
     # right credentials
     login_user(user)
-    flash(f'You are now logged in as {user.name}')
+    flash(f'Welcome {user.name}!')
     return redirect(url_for('profile_page'))
     
 @app.route('/register', methods=['GET', 'POST'])
@@ -77,15 +78,17 @@ def register_page():
 @app.route('/profile', methods=['GET','POST'])
 @login_required
 def profile_page():
-    return render_template('profile.html')
+    user = User.query.filter_by(id=current_user.id).first()
+    return render_template('profile.html', user=user)
+
 
 @app.route('/card', methods=['GET', 'POST'])
 @login_required
 def card_page():
     form = CardForm()
     user_id = current_user.id
-    cards = Card.query.filter_by(owner=user_id).all()
-    num_cards = Card.query.filter_by(owner=user_id).count()
+    cards = Card.query.filter_by(owner_id=user_id).all()
+    num_cards = Card.query.filter_by(owner_id=user_id).count()
     if request.method == 'POST':
         if num_cards >= 1:
             
@@ -97,7 +100,7 @@ def card_page():
                         expDate=form.expdate.data,
                         secCode=form.seccode.data,
                         amount=form.amount.data,
-                        owner=user_id)
+                        owner_id=user_id)
             db.session.add(card)
             db.session.commit()
             return redirect(url_for('card_page'))
@@ -133,6 +136,8 @@ def edit_page():
 @app.route('/store', methods=['GET','POST'])
 @login_required
 def store_page():
+    form = TransactionForm()
+    coins = Coin.query.all()
     results = crypto.get_top_200()
     for result in results:
         result['quote']['USD']['price'] = '$ ' + "{:.2f}".format(result['quote']['USD']['price'])
@@ -142,7 +147,22 @@ def store_page():
 
     db.session.commit()
    
-    return render_template('store.html', results=results)
+    if request.method == 'POST':
+        card = Card.query.filter_by(owner_id=current_user.id).first()
+        if card.amount >= form.amount.data:
+            card.amount -= form.amount.data
+            db.session.commit()
+            # Create a new transaction
+            new_transaction = Transaction(coin_name=form.coin_name.data, user_id=current_user.id, date=form.date.data, amount=form.amount.data)
+            db.session.add(new_transaction)
+            db.session.commit()
+            flash('Transaction successful')
+            return redirect(url_for('profile_page'))
+        else:
+            flash('Not enough funds')
+            return redirect(url_for('store_page'))
+    else:
+        return render_template('store.html', results=results, coins=coins)
 
 @app.route('/logout')
 @login_required

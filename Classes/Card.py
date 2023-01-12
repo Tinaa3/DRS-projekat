@@ -2,6 +2,7 @@ import Classes.User as User
 from UI import db
 
 
+
 class Card(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(length=30), nullable = False)
@@ -9,5 +10,5 @@ class Card(db.Model):
     expDate = db.Column(db.String(length=8), nullable = False)
     secCode = db.Column(db.Integer(), nullable = False)
     amount = db.Column(db.Integer(), nullable = False)
-    owner = db.Column(db.Integer(), db.ForeignKey('user.id'))
-    
+    owner_id = db.Column(db.Integer(), db.ForeignKey('user.id'))
+    owner = db.relationship('User', back_populates='card')

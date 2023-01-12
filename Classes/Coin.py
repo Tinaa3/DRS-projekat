@@ -5,4 +5,5 @@ class Coin(db.Model):
     symbol = db.Column(db.String(255), nullable =False)
     name = db.Column(db.String(), nullable = False)
     price = db.Column(db.Integer(),nullable=False)
+    transactions = db.relationship('Transaction', backref='coin', lazy=True)
     

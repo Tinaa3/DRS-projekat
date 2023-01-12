@@ -18,6 +18,8 @@ class User(db.Model, UserMixin):
     phoneNumber = db.Column(db.String(length=10), nullable = False)
     email = db.Column(db.String(length=50), nullable = False, unique=True)
     password_hash = db.Column(db.String(length=60), nullable=False)
+    transactions = db.relationship('Transaction', backref='user', lazy=True)
+    card = db.relationship('Card', uselist=False, back_populates='owner')
 
     #@property
     #def password(self):

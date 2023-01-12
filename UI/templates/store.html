@@ -2,6 +2,8 @@
 {% block content %}
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet"/> <!--- This line is just linking the bootstrap thingie in the file. The real thing starts below -->
+
 {% endblock %}
 {% block bar %}
 <a href="{{url_for('profile_page')}}">Profile</a>
@@ -10,34 +12,79 @@
 {% endblock %} 
 
 {% block store%}
-
-<div>
+<div class="row justify-content-around">
+  <div class="col-4">
+    <br>
     <table class="table" style="width: 700px; border: 2px;">
-       <thead class="thead-dark" style="background-color: black; height: 1cm;">
-      
-         <tr>
-           <th scope="col" style="color: white;">Cryto Name</th>
-           <th scope="col" style="color: white;">Symbol</th>
-           <th scope="col" style="color: white;">Price</th>
-           <th scope="col" style="color: white;"> Date&Time</th>
-         </tr>
-       </thead>
+      <thead class="thead-dark" style="background-color: black; height: 1cm;">
+     
+        <tr>
+          <th scope="col" style="color: white;">Cryto Name</th>
+          <th scope="col" style="color: white;">Symbol</th>
+          <th scope="col" style="color: white;">Price</th>
+          <th scope="col" style="color: white;"> Date&Time</th>
+        </tr>
+      </thead>
 
 
-       <tbody>
+      <tbody>
 
-         {% for obj in results %}
-         <tr>
-           <td style="background-color: rgb(255, 255, 255);">{{obj.name}}</td>
-           <td style="background-color: rgb(255, 255, 255);">{{obj.symbol}}</td>
-           <td style="background-color: rgb(255, 255, 255);">{{obj.quote.USD.price}}</td>
-           <td style="background-color: rgb(255, 255, 255);">{{obj.last_updated}}</td>
+        {% for obj in results %}
+        <tr>
+          <td style="background-color: rgb(255, 255, 255);">{{obj.name}}</td>
+          <td style="background-color: rgb(217, 215, 215);">{{obj.symbol}}</td>
+          <td style="background-color: rgb(255, 255, 255);">{{obj.quote.USD.price}}</td>
+          <td style="background-color: rgb(217, 215, 215);">{{obj.last_updated}}</td>
 
-         </tr>
-         {% endfor %}
+        </tr>
+        {% endfor %}
 
-       </tbody>
-      </table>
+      </tbody>
+     </table>
   </div>
 
-{% endblock %}
+  <div class="col-4">
+    <br>
+    <form method="POST">
+    <table class="table" style="width: 500px; border: 2px;">
+      <thead class="thead-dark" style="background-color: black; height: 1cm;">
+        <tr>
+          <th scope="col" style="color: white; text-align: center;">TRANSACTION</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr>
+          <td style="background-color: white;">
+          <label for="coin-select">Select a Coin:</label>
+            <select class="custom-select">
+              {% for coin in coins %}
+                <option value="{{ coin.symbol }}">{{ coin.name }} ({{ coin.symbol }}) - {{ coin.price }}</option>
+              {% endfor %}
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td style="background-color: white;">
+              <label for="date-time-input">Select a Date and Time:</label>
+              <input type="datetime-local" class="form-input">
+          </td>
+      </tr>
+      <tr>
+          <td style="background-color: white;">
+              <label for="money-input">Enter Amount:</label>
+              <input type="number" class="form-input" step="0.01" min="0">
+          </td>
+      </tr>
+      <tr>
+        <td style="background-color: white; text-align: center;">
+            <input type="submit" value="BUY" class="form-submit">
+        </td>
+    </tr>
+      </tbody>
+    </table>
+  </form>
+  </div>
+</div>
+
+{% endblock%}
