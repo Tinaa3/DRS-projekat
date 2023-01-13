@@ -167,7 +167,6 @@ def store_page():
         else:
             flash('Invalid coin')
             return redirect(url_for('store_page'))
-
     else:
         return render_template('store.html', results=results, coins=coins)
 
