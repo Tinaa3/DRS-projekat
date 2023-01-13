@@ -148,19 +148,26 @@ def store_page():
     db.session.commit()
    
     if request.method == 'POST':
-        card = Card.query.filter_by(owner_id=current_user.id).first()
-        if card.amount >= form.amount.data:
-            card.amount -= form.amount.data
-            db.session.commit()
-            # Create a new transaction
-            new_transaction = Transaction(coin_name=form.coin_name.data, user_id=current_user.id, date=form.date.data, amount=form.amount.data)
-            db.session.add(new_transaction)
-            db.session.commit()
-            flash('Transaction successful')
-            return redirect(url_for('profile_page'))
+        selected_coin = request.form.get('coin-select')
+        entered_amount = request.form.get('money-input')
+        entered_date = request.form.get('date-time-input')
+        coin = Coin.query.filter_by(name=selected_coin)
+        if coin is not None:
+            new_transaction = Transaction(coin_name = selected_coin, user_id = current_user.id,date=entered_date, amount = entered_amount)
+            card = Card.query.filter_by(owner_id = current_user.id).first()
+            if card.amount >= int(entered_amount):
+                card.amount -= int(entered_amount)
+                db.session.add(new_transaction)
+                db.session.commit()
+                flash('Transaction successful')
+                return redirect(url_for('profile_page'))
+            else:
+                flash('Not enough funds')
+                return redirect(url_for('store_page'))
         else:
-            flash('Not enough funds')
+            flash('Invalid coin')
             return redirect(url_for('store_page'))
+
     else:
         return render_template('store.html', results=results, coins=coins)
 
