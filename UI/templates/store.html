@@ -57,9 +57,9 @@
         <tr>
           <td style="background-color: white;">
           <label for="coin-select">Select a Coin:</label>
-            <select class="custom-select">
+            <select name="coin_name" class="custom-select">
               {% for coin in coins %}
-                <option value="{{ coin.symbol }}">{{ coin.name }} ({{ coin.symbol }}) - {{ coin.price }}</option>
+                <option value="{{ coin.symbol }}"> {{ coin.name }} ({{ coin.symbol }}) - {{ coin.price }}</option>
               {% endfor %}
             </select>
           </td>
@@ -67,7 +67,7 @@
         <tr>
           <td style="background-color: white;">
               <label for="date-time-input">Select a Date and Time:</label>
-              <input type="datetime-local" class="form-input">
+              <input type="datetime-local" name="date" class="form-input">
           </td>
       </tr>
       <tr>

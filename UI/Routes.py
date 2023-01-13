@@ -147,22 +147,23 @@ def store_page():
 
     db.session.commit()
    
-    if request.method == 'POST':
-        card = Card.query.filter_by(owner_id=current_user.id).first()
-        if card.amount >= form.amount.data:
-            card.amount -= form.amount.data
-            db.session.commit()
-            # Create a new transaction
-            new_transaction = Transaction(coin_name=form.coin_name.data, user_id=current_user.id, date=form.date.data, amount=form.amount.data)
-            db.session.add(new_transaction)
-            db.session.commit()
-            flash('Transaction successful')
-            return redirect(url_for('profile_page'))
-        else:
-            flash('Not enough funds')
-            return redirect(url_for('store_page'))
-    else:
+    if request.method == 'GET':
         return render_template('store.html', results=results, coins=coins)
+    card = Card.query.filter_by(owner_id=current_user.id).first()
+    if card.amount < int(form.amount.data):
+        flash('Not enough funds')
+        return redirect(url_for('store_page'))
+    card.amount -= int(form.amount.data)
+    db.session.commit()
+    # Create a new transaction
+    new_transaction = Transaction(coin_name=request.form.get('coin_name'), #fali ovdje da skontam kako sa stranice da uzmem dobru vrijednost jer sad vidi null
+                                    user_id=current_user.id, 
+                                    date=request.form.get('date'), 
+                                    amount=form.amount.data)
+    db.session.add(new_transaction)
+    db.session.commit()
+    flash('Transaction successful')
+    return redirect(url_for('profile_page'))
 
 @app.route('/logout')
 @login_required
