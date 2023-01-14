@@ -78,13 +78,13 @@ def register_page():
 @app.route('/profile', methods=['GET','POST'])
 @login_required
 def profile_page():
-    
+    user = User.query.filter_by(id=current_user.id).first()
     transactions = Transaction.query.filter_by(user_id=current_user.id).all()
     #for transaction in transactions:
     #    coin = Coin.query.filter_by(name=transaction.coin_name).first()
     #    if coin is not None:
     #        transaction.current_value = coin.current_value
-    return render_template('profile.html', transactions=transactions)
+    return render_template('profile.html', transactions=transactions, user=user)
 
 
 @app.route('/card', methods=['GET', 'POST'])
