@@ -39,8 +39,3 @@ class EditForm(FlaskForm):
     password1 = PasswordField(label='password1')
     password2 = PasswordField(label='password2')
     submit = SubmitField(label='Edit Account')
-
-class TransactionForm(FlaskForm):
-    coin_name = StringField(label='Coin_Name')
-    date = DateField(label='Date_Time')
-    amount = IntegerField(label='Amount')

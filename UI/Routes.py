@@ -1,6 +1,6 @@
 from UI import app, db
 from flask import render_template, redirect, url_for, flash, request
-from Classes.forms import RegisterForm, LoginForm, EditForm, CardForm, TransactionForm
+from Classes.forms import RegisterForm, LoginForm, EditForm, CardForm
 from Classes.User import User
 from Classes.Card import Card
 from Classes.Coin import Coin
@@ -78,8 +78,13 @@ def register_page():
 @app.route('/profile', methods=['GET','POST'])
 @login_required
 def profile_page():
-    user = User.query.filter_by(id=current_user.id).first()
-    return render_template('profile.html', user=user)
+    
+    transactions = Transaction.query.filter_by(user_id=current_user.id).all()
+    #for transaction in transactions:
+    #    coin = Coin.query.filter_by(name=transaction.coin_name).first()
+    #    if coin is not None:
+    #        transaction.current_value = coin.current_value
+    return render_template('profile.html', transactions=transactions)
 
 
 @app.route('/card', methods=['GET', 'POST'])
@@ -136,13 +141,12 @@ def edit_page():
 @app.route('/store', methods=['GET','POST'])
 @login_required
 def store_page():
-    form = TransactionForm()
     coins = Coin.query.all()
     results = crypto.get_top_200()
     for result in results:
         result['quote']['USD']['price'] = '$ ' + "{:.2f}".format(result['quote']['USD']['price'])
          # Create a Coin object for each coin
-        new_coin = Coin(name=result['name'], symbol=result['symbol'], price=result['quote']['USD']['price'])
+        new_coin = Coin(name=result['name'], symbol=result['symbol'], price=result['quote']['USD']['price'],current_value=float(result['quote']['USD']['price'].replace('$','')))
         db.session.add(new_coin)
 
     db.session.commit()
