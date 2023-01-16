@@ -19,13 +19,14 @@
 {% endblock %}
 
 {% block profile %}
-<table>
+<table border="5">
     <thead>
       <tr>
         <th style="text-align: center;">Coin Name</th>
         <th style="text-align: center;">Purchase Date</th>
         <th style="text-align: center;">Purchase Price</th>
-       
+        <th style="text-align: center;">Price</th>
+        <th style="text-align: center;"></th>
       </tr>
     </thead>
     <tbody>
@@ -34,7 +35,8 @@
         <td style="text-align: center;">{{transaction.coin_name}}</td>
         <td style="text-align: center;">{{transaction.date}}</td>
         <td style="text-align: center;">{{transaction.amount}}</td>
-   
+        <td style="text-align: center;">{{transaction.price}}</td>
+        
       </tr>
       {% endfor %}
     </tbody>

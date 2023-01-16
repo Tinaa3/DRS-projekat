@@ -142,7 +142,7 @@ def store_page():
     for result in results:
         result['quote']['USD']['price'] = '$ ' + "{:.2f}".format(result['quote']['USD']['price'])
          # Create a Coin object for each coin
-        new_coin = Coin(name=result['name'], symbol=result['symbol'], price=result['quote']['USD']['price'],current_value=float(result['quote']['USD']['price'].replace('$','')))
+        new_coin = Coin(name=result['name'], symbol=result['symbol'],current_value=float(result['quote']['USD']['price'].replace('$','')))
         db.session.add(new_coin)
 
     db.session.commit()
@@ -153,12 +153,22 @@ def store_page():
         entered_date = request.form.get('date-time-input')
         coin = Coin.query.filter_by(name=selected_coin)
         card = Card.query.filter_by(owner_id=current_user.id).first()
+        #res = entered_amount / coin.current_value
+        print(selected_coin)
         if card is None:
             flash('First add credit card!')
             return redirect(url_for('card_page'))
         else: 
             if coin is not None:
-                new_transaction = Transaction(coin_name = selected_coin, user_id = current_user.id,date=entered_date, amount = entered_amount)
+                vr = 0
+                try:
+                    coin = Coin.query.filter_by(symbol=selected_coin).first()
+                    vr = coin.current_value
+                except AttributeError:
+                    print("Coin not found")
+
+                res = float(entered_amount) / vr
+                new_transaction = Transaction(coin_name = selected_coin, user_id = current_user.id,date=entered_date, amount = entered_amount, price = res)
                 #card = Card.query.filter_by(owner_id = current_user.id).first()
                 if card.amount >= int(entered_amount):
                     card.amount -= int(entered_amount)

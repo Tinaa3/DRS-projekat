@@ -66,7 +66,7 @@
           <label for="coin-select">Select a Coin:</label>
             <select class="custom-select" id="coin-select" name="coin-select">
               {% for coin in coins %}
-                <option value="{{ coin.symbol }}"> {{ coin.name }} ({{ coin.symbol }}) - {{ coin.price }}</option>
+                <option value="{{ coin.symbol }}"> {{ coin.name }} ({{ coin.symbol }}) - {{ coin.current_value }}</option>
               {% endfor %}
             </select>
           </td>

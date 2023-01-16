@@ -6,8 +6,4 @@ class Transaction(db.Model):
     user_id = db.Column(db.Integer(), db.ForeignKey('user.id'), nullable = False)
     date = db.Column(db.String(), nullable = False)
     amount = db.Column(db.Integer(), nullable=False)
-
-
-
-
-
+    price = db.Column(db.Float(), nullable = False)
