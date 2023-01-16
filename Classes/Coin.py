@@ -19,4 +19,4 @@ def update_coin_values():
         coin.current_value = current_price
     db.session.commit()
 
-schedule.every(5).hours.do(update_coin_values)
+schedule.every(5).minutes.do(update_coin_values)

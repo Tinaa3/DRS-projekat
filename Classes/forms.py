@@ -25,7 +25,7 @@ class CardForm(FlaskForm):
     name = StringField('Cardholder name', validators=[DataRequired(), Length(min=5,max=30)])
     cardnum = StringField('Card number', validators=[DataRequired(), Length(min=13, max=16), Regexp('^[0-9]*$', message='Card number must be numeric')])
     expdate = StringField('Expiration date', validators=[DataRequired(), Regexp('^(0[1-9]|1[0-2])([0-9]{2})$', message='Expiration date must be in the format MMYY')])
-    seccode = IntegerField('Security code', validators=[DataRequired(), Length(min=3,max=3)])
+    seccode = IntegerField('Security code', validators=[DataRequired(), NumberRange(min=100,max=999)])
     amount = IntegerField('Amount', validators=[DataRequired(), Length(min=4, max=8)])
     submit = SubmitField(label='submit')
 

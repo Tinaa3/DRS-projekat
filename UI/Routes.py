@@ -8,7 +8,7 @@ from Classes.crypto import Crypto
 from Classes.Transaction import Transaction
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, logout_user, login_required, current_user
-from flask_login import LoginManager
+from flask_login import LoginManager 
 
 crypto = Crypto()
 login_manager = LoginManager() # Create a Login Manager instance
@@ -80,10 +80,6 @@ def register_page():
 def profile_page():
     user = User.query.filter_by(id=current_user.id).first()
     transactions = Transaction.query.filter_by(user_id=current_user.id).all()
-    #for transaction in transactions:
-    #    coin = Coin.query.filter_by(name=transaction.coin_name).first()
-    #    if coin is not None:
-    #        transaction.current_value = coin.current_value
     return render_template('profile.html', transactions=transactions, user=user)
 
 
@@ -156,23 +152,28 @@ def store_page():
         entered_amount = request.form.get('money-input')
         entered_date = request.form.get('date-time-input')
         coin = Coin.query.filter_by(name=selected_coin)
-        if coin is not None:
-            new_transaction = Transaction(coin_name = selected_coin, user_id = current_user.id,date=entered_date, amount = entered_amount)
-            card = Card.query.filter_by(owner_id = current_user.id).first()
-            if card.amount >= int(entered_amount):
-                card.amount -= int(entered_amount)
-                db.session.add(new_transaction)
-                db.session.commit()
-                flash('Transaction successful')
-                return redirect(url_for('profile_page'))
+        card = Card.query.filter_by(owner_id=current_user.id).first()
+        if card is None:
+            flash('First add credit card!')
+            return redirect(url_for('card_page'))
+        else: 
+            if coin is not None:
+                new_transaction = Transaction(coin_name = selected_coin, user_id = current_user.id,date=entered_date, amount = entered_amount)
+                #card = Card.query.filter_by(owner_id = current_user.id).first()
+                if card.amount >= int(entered_amount):
+                    card.amount -= int(entered_amount)
+                    db.session.add(new_transaction)
+                    db.session.commit()
+                    flash('Transaction successful')
+                    return redirect(url_for('profile_page'))
+                else:
+                    flash('Not enough funds')
+                    return redirect(url_for('store_page'))
             else:
-                flash('Not enough funds')
+                flash('Invalid coin')
                 return redirect(url_for('store_page'))
-        else:
-            flash('Invalid coin')
-            return redirect(url_for('store_page'))
-    else:
-        return render_template('store.html', results=results, coins=coins)
+       
+    return render_template('store.html', results=results, coins=coins)
 
 @app.route('/logout')
 @login_required
