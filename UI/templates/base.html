@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <head>
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet"/> <!--- This line is just linking the bootstrap thingie in the file. The real thing starts below -->
-
+ 
 {% block content %}
 {% endblock %}
 </head>
@@ -335,6 +335,133 @@ list-type-ulli {
   font-style: bold;
 
 }
+
+.button-26 {
+  appearance: button;
+  background-color: #1652F0;
+  border: 1px solid #1652F0;
+  border-radius: 4px;
+  box-sizing: border-box;
+  color: #FFFFFF;
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 1.15;
+  overflow: visible;
+  padding: 10px 14px;
+  position: relative;
+  text-align: center;
+  text-transform: none;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.button-26:disabled {
+  opacity: .5;
+}
+
+.button-26:focus {
+  outline: 0;
+}
+
+.button-26:hover {
+  background-color: #0A46E4;
+  border-color: #0A46E4;
+}
+
+.button-26:active {
+  background-color: #0039D7;
+  border-color: #0039D7;
+}
+
+.center-button {
+  display: flex;
+  background-color: hsl(230, 71%, 42%); /* Green */
+    border: none;
+    color: white;
+
+    padding: 16px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 20px;
+    margin: 4px 2px;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+    cursor: pointer;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+@media (hover: hover) {
+  #creditcard {
+    /*  set start position */
+    transform: translateY(110px);
+    transition: transform 0.1s ease-in-out;
+    /*  set transition for mouse enter & exit */
+  }
+
+  #money {
+    /*  set start position */
+    transform: translateY(180px);
+    transition: transform 0.1s ease-in-out;
+    /*  set transition for mouse enter & exit */
+  }
+
+  button:hover #creditcard {
+    transform: translateY(0px);
+    transition: transform 0.2s ease-in-out;
+    /*  overide transition for mouse enter */
+  }
+
+  button:hover #money {
+    transform: translateY(0px);
+    transition: transform 0.3s ease-in-out;
+    /*  overide transition for mouse enter */
+  }
+}
+
+
+.button:hover .button__text span {
+  transform: translateY(-0.25rem);
+  transition: transform .2s ease-in-out;
+}
+
+/* styling */
+
+@import url("https://fonts.googleapis.com/css2?family=Lato:wght@300;400&display=swap");
+
+.button {
+  border: none;
+  outline: none;
+  background-color: rgb(9, 0, 128);
+  padding: 1rem 90px 1rem 2rem;
+  pointer-events: all;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 8px;
+  letter-spacing: 0.7px;
+  background-color: #5086bd;
+  color: #fff;
+  font-size: 21px;
+  font-family: "Lato", sans-serif;
+  cursor: pointer;
+  box-shadow: rgba(0, 9, 61, 0.2) 0px 4px 8px 0px;
+}
+.button__svg {
+  position: absolute;
+  overflow: visible;
+  bottom: 6px;
+  right: 0.2rem;
+  height: 140%;
+}
+
 </style>
 <body>
 <div class="topnav">
@@ -346,11 +473,10 @@ list-type-ulli {
   
   {% endblock %}
 </div>
-<form method="POST" class="form-register form-signin">
-{% block profile %}
 
+{% block profile %}
 {% endblock %}
-</form>
+
 {% block store %}
 {% endblock %}
 {% block card%}
