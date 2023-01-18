@@ -9,6 +9,8 @@ from Classes.Transaction import Transaction
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, logout_user, login_required, current_user
 from flask_login import LoginManager 
+import re
+regex='^(?:(?:31(\/|-|\.)(?:0?[13578]|1[02]))\1|(?:(?:29|30)(\/|-|\.)(?:0?[13-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(\/|-|\.)0?2\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(\/|-|\.)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})$'
 
 crypto = Crypto()
 login_manager = LoginManager() # Create a Login Manager instance
@@ -80,6 +82,7 @@ def register_page():
 def profile_page():
     if request.method=='POST':
         sold_transaction_id = request.form.get('sold_transaction')
+        flash(f'{ sold_transaction_id }')
         sold_transaction_object=Transaction.query.filter_by(id=sold_transaction_id).first()
         if sold_transaction_object:
             if sold_transaction_object not in current_user.transactions:
@@ -164,6 +167,9 @@ def store_page():
         selected_coin = request.form.get('coin-select')
         entered_amount = request.form.get('money-input')
         entered_date = request.form.get('date-time-input')
+        if entered_date == '':
+            flash('Date!')
+            return redirect(url_for('store_page'))
         coin = Coin.query.filter_by(name=selected_coin)
         card = Card.query.filter_by(owner_id=current_user.id).first()
         #res = entered_amount / coin.current_value
