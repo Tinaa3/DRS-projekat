@@ -7,3 +7,5 @@ class Transaction(db.Model):
     date = db.Column(db.String(), nullable = False)
     amount = db.Column(db.Integer(), nullable=False)
     price = db.Column(db.Float(), nullable = False)
+
+

@@ -78,6 +78,19 @@ def register_page():
 @app.route('/profile', methods=['GET','POST'])
 @login_required
 def profile_page():
+    if request.method=='POST':
+        sold_transaction_id = request.form.get('sold_transaction')
+        sold_transaction_object=Transaction.query.filter_by(id=sold_transaction_id).first()
+        if sold_transaction_object:
+            if sold_transaction_object not in current_user.transactions:
+                flash(f'Something went wrong! You don\'t have enough { sold_transaction_object.coin_name } to sell.', category='danger')
+            coin_num = sold_transaction_object.price
+            coin_object = Coin.query.filter_by(symbol=sold_transaction_object.coin_name).first()
+            temp_value = coin_num * coin_object.current_value   
+            current_user.card.amount += temp_value       
+            flash(f'Congratulations! Money from the sale: { temp_value }$', category='success')
+            Transaction.query.filter_by(id=sold_transaction_id).delete()
+            db.session.commit()
     user = User.query.filter_by(id=current_user.id).first()
     transactions = Transaction.query.filter_by(user_id=current_user.id).all()
     return render_template('profile.html', transactions=transactions, user=user)
