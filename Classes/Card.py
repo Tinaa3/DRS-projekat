@@ -9,6 +9,6 @@ class Card(db.Model):
     cardNum = db.Column(db.Integer(),unique=True, nullable = False)
     expDate = db.Column(db.String(length=8), nullable = False)
     secCode = db.Column(db.Integer(), nullable = False)
-    amount = db.Column(db.Integer(), nullable = False)
+    amount = db.Column(db.Float(), nullable = False)
     owner_id = db.Column(db.Integer(), db.ForeignKey('user.id'))
     owner = db.relationship('User', back_populates='card')

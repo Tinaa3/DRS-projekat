@@ -183,8 +183,8 @@ def store_page():
                 res = float(entered_amount) / vr
                 new_transaction = Transaction(coin_name = selected_coin, user_id = current_user.id,date=entered_date, amount = entered_amount, price = res)
                 #card = Card.query.filter_by(owner_id = current_user.id).first()
-                if card.amount >= int(entered_amount):
-                    card.amount -= int(entered_amount)
+                if card.amount >= float(entered_amount):
+                    card.amount -= float(entered_amount)
                     db.session.add(new_transaction)
                     db.session.commit()
                     flash('Transaction successful')
