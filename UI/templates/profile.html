@@ -6,7 +6,7 @@
 <a href="{{url_for('store_page')}}">Store</a>
 
 {% if current_user.is_authenticated %}
-    <p>Your current balance: {{ current_user.card.amount }}</p>
+  <p>Your current balance: {{ "%.2f" % current_user.card.amount }}$</p>
 {% endif %}
 
 {% with messages = get_flashed_messages() %}
@@ -80,12 +80,14 @@
         {% for transaction in transactions %}
         <tbody>
           <tr>
+            
             <td style="text-align: center; background-color: rgb(255, 255, 255);">{{transaction.coin_name}}</td>
             <td style="text-align: center;background-color: rgb(217, 215, 215);">{{transaction.date}}</td>
             <td style="text-align: center; background-color: rgb(255, 255, 255);">{{transaction.amount}}$</td>
             <td style="text-align: center;background-color: rgb(217, 215, 215);">{{transaction.price}} {{transaction.coin_name}}</td>
-            <td style="text-align: center; background-color: rgb(255, 255, 255);"> <button class="button-26">SELL</button></td>
             <input type="hidden" id="custId" name="sold_transaction" value="{{ transaction.id }}">
+              <td style="text-align: center; background-color: rgb(255, 255, 255);"> <input type="submit" value="SELL" class="button-26" onclick="document.getElementById('custId').value={{ transaction.id }}"></td>
+            
           </tr>
         </tbody>
         {% endfor %}

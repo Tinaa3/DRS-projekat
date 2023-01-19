@@ -82,7 +82,7 @@ def register_page():
 def profile_page():
     if request.method=='POST':
         sold_transaction_id = request.form.get('sold_transaction')
-        flash(f'{ sold_transaction_id }')
+        print(sold_transaction_id)
         sold_transaction_object=Transaction.query.filter_by(id=sold_transaction_id).first()
         if sold_transaction_object:
             if sold_transaction_object not in current_user.transactions:
@@ -92,7 +92,8 @@ def profile_page():
             temp_value = coin_num * coin_object.current_value   
             current_user.card.amount += temp_value       
             flash(f'Congratulations! Money from the sale: { temp_value }$', category='success')
-            Transaction.query.filter_by(id=sold_transaction_id).delete()
+            Transaction.query.filter_by(id=sold_transaction_id, user_id=current_user.id).delete()
+            #Transaction.query.filter_by(id=sold_transaction_id).delete()
             db.session.commit()
     user = User.query.filter_by(id=current_user.id).first()
     transactions = Transaction.query.filter_by(user_id=current_user.id).all()
@@ -167,8 +168,14 @@ def store_page():
         selected_coin = request.form.get('coin-select')
         entered_amount = request.form.get('money-input')
         entered_date = request.form.get('date-time-input')
+        if entered_date == '' and entered_amount == '':
+            flash('DATE AND AMOUNT')
+            return redirect(url_for('store_page'))
         if entered_date == '':
             flash('Date!')
+            return redirect(url_for('store_page'))
+        if entered_amount == '':
+            flash('Amount!')
             return redirect(url_for('store_page'))
         coin = Coin.query.filter_by(name=selected_coin)
         card = Card.query.filter_by(owner_id=current_user.id).first()
