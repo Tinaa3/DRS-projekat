@@ -3,11 +3,18 @@
     "development"
   ],
   "hints": {
-    "meta-viewport": "off"
+    "meta-viewport": "off",
+    "axe/aria": [
+      "default",
+      {
+        "aria-roles": "off"
+      }
+    ]
   },
   "browserslist": [
     "defaults",
     "not ie 11",
-    "not samsung <= 19"
+    "not samsung <= 19",
+    "not ios_saf <= 14.8"
   ]
 }
