@@ -124,7 +124,7 @@ def profile_page():
         #sum of coins - 8.
     sum=[0, 0]
     for key in result.keys():
-        sum[0] += result[key]['price']
+        sum[0] += result[key]['amount']
         sum[1] += result[key]['profit']
     
     user = User.query.filter_by(id=current_user.id).first()
