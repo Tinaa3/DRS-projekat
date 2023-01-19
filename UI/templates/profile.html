@@ -107,6 +107,7 @@
 
 </table>
 
+{{ sum[0] }} {{ sum[1] }}
 
 <div class="row justify-content-around">
 
@@ -137,7 +138,7 @@
                 {{transaction.coin_name}}</td>
               <input type="hidden" id="custId" name="sold_transaction" value="{{ transaction.id }}">
               <td style="text-align: center; background-color: rgb(255, 255, 255);"> <input type="submit" value="SELL"
-                  class="button-26" onclick="document.getElementById('custId').value={{ transaction.id }}"></td>
+                  class="button-26" onclick="document.getElementById('custId').value=(transaction.id)"></td>
 
             </tr>
           </tbody>
