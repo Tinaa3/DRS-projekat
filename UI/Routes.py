@@ -82,6 +82,15 @@ def register_page():
 @app.route('/profile', methods=['GET','POST'])
 @login_required
 def profile_page():
+    coins = Coin.query.all()
+    results = crypto.get_top_200()
+    for result in results:
+        result['quote']['USD']['price'] = '$ ' + "{:.2f}".format(result['quote']['USD']['price'])
+         # Create a Coin object for each coin
+        new_coin = Coin(name=result['name'], symbol=result['symbol'],current_value=float(result['quote']['USD']['price'].replace('$','')))
+        db.session.add(new_coin)
+
+    db.session.commit()
         #table of transactions - 6.
     if request.method=='POST':
         sold_transaction_id = request.form.get('sold_transaction')
@@ -115,12 +124,12 @@ def profile_page():
         #sum of coins - 8.
     sum=[0, 0]
     for key in result.keys():
-        sum[0] += result[key]['amount']
+        sum[0] += result[key]['price']
         sum[1] += result[key]['profit']
     
     user = User.query.filter_by(id=current_user.id).first()
     transactions = Transaction.query.filter_by(user_id=current_user.id).all()
-    return render_template('profile.html', transactions=transactions, user=user, result=result, sum=sum)
+    return render_template('profile.html', transactions=transactions, user=user, result=result, sum=sum, coins=coins)
 
 
 @app.route('/card', methods=['GET', 'POST'])

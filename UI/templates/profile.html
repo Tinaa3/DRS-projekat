@@ -76,68 +76,37 @@
 </a>
 
 {% else %}
-
-<table class="table" style="width: 500px; border: 2px;">
-
-  <thead class="thead-dark" style="background-color: black; height: 1cm;">
-
-    <tr>
-      <th scope="col" style="text-align: center;">Coin Name</th>
-      <th scope="col" style="text-align: center;">Price</th>
-      <th scope="col" style="text-align: center;">Kolicina</th>
-      <th scope="col" style="text-align: center;">+/-</th>
-    </tr>
-  </thead>
-  {% for coin_name, values in result.items() %}
-    <tbody>
-    <tr>
-      <td style="text-align: center; background-color: rgb(255, 255, 255);">{{coin_name}}</td>
-      <td style="text-align: center; background-color: rgb(255, 255, 255);">{{values.amount}}$</td>
-      <td style="text-align: center;background-color: rgb(217, 215, 215);">{{values.price}}</td>
-      
-        {%if values.profit > 0.0%}
-        <td style="text-align: center;background-color: red;">{{ values.profit }}</td>
-        {% else %}
-        <td style="text-align: center;background-color: green;">{{ values.profit }}</td>
-        {% endif%}
-        
-    </tr>
-  </tbody>
-  {% endfor %}
-
-</table>
-
 {{ sum[0] }} {{ sum[1] }}
-
+<br>
 <div class="row justify-content-around">
 
 
   <div class="row justify-content-around">
-    <div class="col-3" style="margin-left: auto;">
+    <div class="col-11" style="margin-left: auto;">
       <form method="POST">
         <table class="table" style="width: 700px; border: 2px;">
 
-          <thead class="thead-dark" style="background-color: black; height: 1cm;">
+          <thead class="thead-dark" >
 
             <tr>
-              <th scope="col" style="text-align: center;">Coin Name</th>
-              <th scope="col" style="text-align: center;">Purchase Date</th>
-              <th scope="col" style="text-align: center;">Purchase Price</th>
-              <th scope="col" style="text-align: center;">Price</th>
-              <th scope="col" style="text-align: center;"></th>
+              <th scope="col">Coin Name</th>
+              <th scope="col">Purchase Date</th>
+              <th scope="col">Purchase Price</th>
+              <th scope="col">Price</th>
+              <th scope="col"></th>
             </tr>
           </thead>
           {% for transaction in transactions %}
           <tbody>
             <tr>
 
-              <td style="text-align: center; background-color: rgb(255, 255, 255);">{{transaction.coin_name}}</td>
-              <td style="text-align: center;background-color: rgb(217, 215, 215);">{{transaction.date}}</td>
-              <td style="text-align: center; background-color: rgb(255, 255, 255);">{{transaction.amount}}$</td>
-              <td style="text-align: center;background-color: rgb(217, 215, 215);">{{transaction.price}}
+              <td class="td1">{{transaction.coin_name}}</td>
+              <td class="td2">{{transaction.date}}</td>
+              <td class="td1">{{transaction.amount}}$</td>
+              <td class="td2">{{transaction.price}}
                 {{transaction.coin_name}}</td>
               <input type="hidden" id="custId" name="sold_transaction" value="{{ transaction.id }}">
-              <td style="text-align: center; background-color: rgb(255, 255, 255);"> <input type="submit" value="SELL"
+              <td class="td1"> <input type="submit" value="SELL"
                   class="button-26" onclick="document.getElementById('custId').value=(transaction.id)"></td>
 
             </tr>
@@ -145,9 +114,42 @@
           {% endfor %}
         </table>
       </form>
-      {% endif%}
+     
     </div>
   </div>
-  <div class="col-3"></div>
+  <br><br>
+  <div class="col-2">
+    <table class="table" style="width: 500px; border: 2px;">
+
+      <thead class="thead-dark" >
+    
+        <tr>
+          <th scope="col" >Coin Name</th>
+          <th scope="col" >Price</th>
+          <th scope="col" >Kolicina</th>
+          <th scope="col" >+/-</th>
+        </tr>
+      </thead>
+      {% for coin_name, values in result.items() %}
+        <tbody>
+        <tr>
+          <td class="td1">{{coin_name}}</td>
+          <td class="td2">{{values.amount}}$</td>
+          <td class="td1">{{values.price}}</td>
+          
+            {%if values.profit > 0.0%}
+            <td style="text-align: center;background-color: red;">{{ values.profit }}</td>
+            {% else %}
+            <td style="text-align: center;background-color: green;">{{ values.profit }}</td>
+            {% endif%}
+            
+        </tr>
+      </tbody>
+      {% endfor %}
+    
+    </table>
+  </div>
+ 
+  {% endif%}
   <div class="col-3"></div>
   {% endblock %}
