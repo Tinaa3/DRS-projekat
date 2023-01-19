@@ -10,6 +10,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, logout_user, login_required, current_user
 from flask_login import LoginManager 
 import re
+from itertools import groupby
+from operator import attrgetter
 regex='^(?:(?:31(\/|-|\.)(?:0?[13578]|1[02]))\1|(?:(?:29|30)(\/|-|\.)(?:0?[13-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(\/|-|\.)0?2\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(\/|-|\.)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})$'
 
 crypto = Crypto()
@@ -80,9 +82,28 @@ def register_page():
 @app.route('/profile', methods=['GET','POST'])
 @login_required
 def profile_page():
+
+    current_transactions = Transaction.query.filter_by(user_id=current_user.id).all()
+    
+    # Group transactions by coin_name
+    transactions_by_coin_name = groupby(sorted(current_transactions, key=attrgetter('coin_name')), attrgetter('coin_name'))
+
+    # Sum transactions amount and price for each coin_name
+    result = {}
+    for coin_name, transactions in transactions_by_coin_name:
+        result[coin_name] = {'amount': 0, 'price': 0, 'profit': 0}
+        for transaction in transactions:
+            result[coin_name]['amount'] += transaction.amount
+            result[coin_name]['price'] += transaction.price
+    
+    for key in result.keys():
+        current_price = Coin.query.filter_by(symbol=key).first()
+        result[key]['profit'] = result[key]['amount'] - (current_price.current_value * result[key]['price'])
+
+    print(result)  
+
     if request.method=='POST':
         sold_transaction_id = request.form.get('sold_transaction')
-        print(sold_transaction_id)
         sold_transaction_object=Transaction.query.filter_by(id=sold_transaction_id).first()
         if sold_transaction_object:
             if sold_transaction_object not in current_user.transactions:
@@ -93,11 +114,10 @@ def profile_page():
             current_user.card.amount += temp_value       
             flash(f'Congratulations! Money from the sale: { temp_value }$', category='success')
             Transaction.query.filter_by(id=sold_transaction_id, user_id=current_user.id).delete()
-            #Transaction.query.filter_by(id=sold_transaction_id).delete()
             db.session.commit()
     user = User.query.filter_by(id=current_user.id).first()
     transactions = Transaction.query.filter_by(user_id=current_user.id).all()
-    return render_template('profile.html', transactions=transactions, user=user)
+    return render_template('profile.html', transactions=transactions, user=user, result=result)
 
 
 @app.route('/card', methods=['GET', 'POST'])
