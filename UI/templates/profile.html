@@ -5,7 +5,7 @@
 <a href="{{url_for('card_page')}}">Card</a>
 <a href="{{url_for('store_page')}}">Store</a>
 {% if transactions %}
-<a style="color: rgb(69, 69, 162); font-weight: bold; font-size: 17px">Total:{{ total }}$ </a>
+<a style="color: rgb(69, 69, 162); font-weight: bold; font-size: 17px">Total:{{ "%.2f" % total }}$ </a>
 {% endif %}
 
 {% if current_user.is_authenticated %}
@@ -94,7 +94,7 @@
               <th scope="col">Coin Name</th>
               <th scope="col">Purchase Date</th>
               <th scope="col">Purchase Price</th>
-              <th scope="col">Price</th>
+              <th scope="col">Amount of coins</th>
               <th scope="col"></th>
             </tr>
           </thead>
@@ -128,7 +128,7 @@
         <tr>
           <th scope="col" >Coin Name</th>
           <th scope="col" >Price</th>
-          <th scope="col" >Coin Value</th>
+          <th scope="col" >Amount of coins</th>
           <th scope="col" >+/-</th>
         </tr>
       </thead>
