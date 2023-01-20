@@ -126,10 +126,19 @@ def profile_page():
     for key in result.keys():
         sum[0] += result[key]['amount']
         sum[1] += result[key]['profit']
+
+        #chart
+    plus_profit = 0
+    minus_profit = 0
+    for key in result.keys():
+        if result[key]['profit'] > 0:
+            plus_profit += result[key]['profit']
+        else:
+            minus_profit += result[key]['profit']
     
     user = User.query.filter_by(id=current_user.id).first()
     transactions = Transaction.query.filter_by(user_id=current_user.id).all()
-    return render_template('profile.html', transactions=transactions, user=user, result=result, sum=sum, coins=coins)
+    return render_template('profile.html', transactions=transactions, user=user, result=result, sum=sum, coins=coins, plus_profit=plus_profit, minus_profit=minus_profit)
 
 
 @app.route('/card', methods=['GET', 'POST'])

@@ -4,6 +4,9 @@
 <a href="{{url_for('edit_page')}}">Edit profile</a>
 <a href="{{url_for('card_page')}}">Card</a>
 <a href="{{url_for('store_page')}}">Store</a>
+{% if transactions %}
+<a style="color: rgb(69, 69, 162); font-weight: bold; font-size: 17px">Total:{{ sum[0] }}$ </a>
+{% endif %}
 
 {% if current_user.is_authenticated %}
 <p>Your current balance: {{ "%.2f" % current_user.card.amount }}$</p>
@@ -11,7 +14,7 @@
 
 {% with messages = get_flashed_messages() %}
 {% if messages %}
-<div style="color: rgb(7, 7, 114); font-weight: bold; font-size: large;">
+<div style=>
   {{ messages[0] }}<br>
 </div>
 {% endif %}
@@ -76,13 +79,12 @@
 </a>
 
 {% else %}
-{{ sum[0] }} {{ sum[1] }}
 <br>
 <div class="row justify-content-around">
 
 
   <div class="row justify-content-around">
-    <div class="col-11" >
+    <div class="col-10" >
       <form method="POST">
         <table class="table" style="width: 700px; border: 2px;">
 
@@ -107,7 +109,7 @@
                 {{transaction.coin_name}}</td>
               <input type="hidden" id="custId" name="sold_transaction" value="{{ transaction.id }}">
               <td class="td1"> <input type="submit" value="SELL"
-                  class="button-26" onclick="document.getElementById('custId').value=(transaction.id)"></td>
+                  class="button-26" onclick="document.getElementById('custId').value= {{transaction.id}} "></td>
 
             </tr>
           </tbody>
@@ -118,10 +120,10 @@
     </div>
   </div>
   <br><br>
-  <div class="col-2">
-    <table class="table" style="width: 500px; border: 2px;">
+  <div class="col-5">
+    <table class="table" style="width: 600px; border: 2px;">
 
-      <thead class="thead-dark" >
+      <thead class=" thead thead-dark" >
     
         <tr>
           <th scope="col" >Coin Name</th>
@@ -148,8 +150,40 @@
       {% endfor %}
     
     </table>
+    <div class="row justify-content-around">
+    <div>
+      <p class="pt">(+/-)Total: {{ sum[1] }}</p>
+      <canvas id="profitChart"  style="width: 300px; height: 300px;"></canvas>
+      <script>
+        var plusProfit = "{{plus_profit}}";
+        var minusProfit = "{{minus_profit}}";
+        var profit = plusProfit - minusProfit;
+        var loss = minusProfit * -1;
+        var ctx = document.getElementById('profitChart').getContext('2d');
+        var chart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ["Loss", "Profit"],
+                datasets: [{
+                    data: [profit,loss],
+                    backgroundColor: ['red', 'green'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+        });
+    </script>
+    </div>
+    
   </div>
- 
+</div>
+
   {% endif%}
-  <div class="col-3"></div>
+  
   {% endblock %}
