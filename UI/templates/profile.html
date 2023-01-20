@@ -5,7 +5,7 @@
 <a href="{{url_for('card_page')}}">Card</a>
 <a href="{{url_for('store_page')}}">Store</a>
 {% if transactions %}
-<a style="color: rgb(69, 69, 162); font-weight: bold; font-size: 17px">Total:{{ sum[0] }}$ </a>
+<a style="color: rgb(69, 69, 162); font-weight: bold; font-size: 17px">Total:{{ total }}$ </a>
 {% endif %}
 
 {% if current_user.is_authenticated %}
@@ -106,7 +106,7 @@
               <td class="td2">{{transaction.date}}</td>
               <td class="td1">{{transaction.amount}}$</td>
               <td class="td2">{{transaction.price}}
-                {{transaction.coin_name}}</td>
+                {{transaction.coin_name}}</td>               
               <input type="hidden" id="custId" name="sold_transaction" value="{{ transaction.id }}">
               <td class="td1"> <input type="submit" value="SELL"
                   class="button-26" onclick="document.getElementById('custId').value= {{transaction.id}} "></td>
@@ -140,9 +140,10 @@
           <td class="td1">{{values.price}}</td>
           
             {%if values.profit > 0.0%}
-            <td style="text-align: center;background-color: red;">{{ values.profit }}</td>
-            {% else %}
             <td style="text-align: center;background-color: green;">{{ values.profit }}</td>
+            {% else %}
+            
+            <td style="text-align: center;background-color: red;">{{ values.profit }}</td>
             {% endif%}
             
         </tr>
@@ -166,7 +167,7 @@
                 labels: ["Loss", "Profit"],
                 datasets: [{
                     data: [profit,loss],
-                    backgroundColor: ['red', 'green'],
+                    backgroundColor: ['green', 'red'],
                     borderWidth: 1
                 }]
             },

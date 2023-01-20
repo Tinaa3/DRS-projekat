@@ -105,7 +105,8 @@ def profile_page():
             flash(f'Congratulations! Money from the sale: { temp_value }$', category='success')
             Transaction.query.filter_by(id=sold_transaction_id, user_id=current_user.id).delete()
             db.session.commit()
-
+    
+    
         #table of coins - 7.
     current_transactions = Transaction.query.filter_by(user_id=current_user.id).all()
     # Group transactions by coin_name
@@ -116,16 +117,18 @@ def profile_page():
         result[coin_name] = {'amount': 0, 'price': 0, 'profit': 0}
         for transaction in transactions:
             result[coin_name]['amount'] += transaction.amount
-            result[coin_name]['price'] += transaction.price
+            result[coin_name]['price'] += transaction.price           
     for key in result.keys():
         current_price = Coin.query.filter_by(symbol=key).first()
-        result[key]['profit'] = result[key]['amount'] - (current_price.current_value * result[key]['price'])
-
+        result[key]['profit'] = (current_price.current_value * result[key]['price']) - result[key]['amount']
+        
         #sum of coins - 8.
     sum=[0, 0]
+    total = 0
     for key in result.keys():
         sum[0] += result[key]['amount']
         sum[1] += result[key]['profit']
+        total = sum[0] + sum[1]
 
         #chart
     plus_profit = 0
@@ -135,10 +138,12 @@ def profile_page():
             plus_profit += result[key]['profit']
         else:
             minus_profit += result[key]['profit']
+
     
     user = User.query.filter_by(id=current_user.id).first()
     transactions = Transaction.query.filter_by(user_id=current_user.id).all()
-    return render_template('profile.html', transactions=transactions, user=user, result=result, sum=sum, coins=coins, plus_profit=plus_profit, minus_profit=minus_profit)
+    
+    return render_template('profile.html', transactions=transactions, user=user, result=result, sum=sum, total=total, coins=coins, plus_profit=plus_profit, minus_profit=minus_profit)
 
 
 @app.route('/card', methods=['GET', 'POST'])
