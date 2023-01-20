@@ -9,10 +9,8 @@ from Classes.Transaction import Transaction
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, logout_user, login_required, current_user
 from flask_login import LoginManager 
-import re
 from itertools import groupby
 from operator import attrgetter
-regex='^(?:(?:31(\/|-|\.)(?:0?[13578]|1[02]))\1|(?:(?:29|30)(\/|-|\.)(?:0?[13-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(\/|-|\.)0?2\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(\/|-|\.)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})$'
 
 crypto = Crypto()
 login_manager = LoginManager() # Create a Login Manager instance
@@ -106,7 +104,6 @@ def profile_page():
             Transaction.query.filter_by(id=sold_transaction_id, user_id=current_user.id).delete()
             db.session.commit()
     
-    x=0
         #table of coins - 7.
     current_transactions = Transaction.query.filter_by(user_id=current_user.id).all()
     # Group transactions by coin_name
@@ -238,7 +235,9 @@ def store_page():
                     vr = coin.current_value
                 except AttributeError:
                     print("Coin not found")
-
+                if vr == 0:
+                    flash('Coin is worth zero dollars! The transaction will not be executed.')
+                    return redirect(url_for('store_page'))
                 res = float(entered_amount) / vr
                 new_transaction = Transaction(coin_name = selected_coin, user_id = current_user.id,date=entered_date, amount = entered_amount, price = res)
                 #card = Card.query.filter_by(owner_id = current_user.id).first()
