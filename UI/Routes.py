@@ -106,7 +106,7 @@ def profile_page():
             Transaction.query.filter_by(id=sold_transaction_id, user_id=current_user.id).delete()
             db.session.commit()
     
-    
+    x=0
         #table of coins - 7.
     current_transactions = Transaction.query.filter_by(user_id=current_user.id).all()
     # Group transactions by coin_name
