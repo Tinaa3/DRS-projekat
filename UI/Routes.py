@@ -33,7 +33,6 @@ def home_page():
     #if request.method=='GET': # if the request is a GET we return the login page
     return render_template('home.html')
 
-
 @app.route('/', methods=['POST'])   
 @app.route('/home', methods=['POST'])   
 def login_page():  
@@ -88,8 +87,8 @@ def profile_page():
          # Create a Coin object for each coin
         new_coin = Coin(name=result['name'], symbol=result['symbol'],current_value=float(result['quote']['USD']['price'].replace('$','')))
         db.session.add(new_coin)
-
     db.session.commit()
+
         #table of transactions - 6.
     if request.method=='POST':
         sold_transaction_id = request.form.get('sold_transaction')
@@ -131,12 +130,9 @@ def profile_page():
         else:
             minus_profit += result[key]['profit']
 
-    
     user = User.query.filter_by(id=current_user.id).first()
     transactions = Transaction.query.filter_by(user_id=current_user.id).all()
-    
     return render_template('profile.html', transactions=transactions, user=user, result=result, sum=sum, total=total, coins=coins, plus_profit=plus_profit, minus_profit=minus_profit)
-
 
 @app.route('/card', methods=['GET', 'POST'])
 @login_required
@@ -213,40 +209,18 @@ def store_page():
         if entered_amount == '':
             flash('Amount!')
             return redirect(url_for('store_page'))
-        coin = Coin.query.filter_by(name=selected_coin)
         card = Card.query.filter_by(owner_id=current_user.id).first()
-        #res = entered_amount / coin.current_value
-        print(selected_coin)
         if card is None:
-            flash('First add credit card!')
+            result_queue.put('First add credit card!')
             return redirect(url_for('card_page'))
-        else: 
-            if coin is not None:
-                vr = 0
-                try:
-                    coin = Coin.query.filter_by(symbol=selected_coin).first()
-                    vr = coin.current_value
-                except AttributeError:
-                    print("Coin not found")
-                if vr == 0:
-                    flash('Coin is worth zero dollars! The transaction will not be executed.')
-                    return redirect(url_for('store_page'))
-                res = float(entered_amount) / vr
-                new_transaction = Transaction(coin_name = selected_coin, user_id = current_user.id,date=entered_date, amount = entered_amount, price = res)
-                #card = Card.query.filter_by(owner_id = current_user.id).first()
-                if card.amount >= float(entered_amount):
-                    card.amount -= float(entered_amount)
-                    db.session.add(new_transaction)
-                    db.session.commit()
-                    flash('Transaction successful')
-                    return redirect(url_for('profile_page'))
-                else:
-                    flash('Not enough funds')
-                    return redirect(url_for('store_page'))
-            else:
-                flash('Invalid coin')
-                return redirect(url_for('store_page'))
-       
+        
+        result_queue = Queue()
+        p = Process(target=buy_coin, args=(selected_coin, entered_amount, entered_date, current_user.id, result_queue))
+        p.start()   
+        p.join() #wait for this process to complete
+        flash(result_queue.get())
+        return redirect(url_for('store_page'))
+
     return render_template('store.html', results=results, coins=coins)
 
 @app.route('/logout')
@@ -255,9 +229,9 @@ def logout():
     logout_user()
     return redirect(url_for('home_page'))
 
-def sell_coin(sold_transaction_id, temp_id, result_queue):
+def sell_coin(sold_transaction_id, current_user_id, result_queue):
     with app.app_context():
-        temp_user = User.query.get(int(temp_id))
+        temp_user = User.query.get(int(current_user_id))
         sold_transaction_object = Transaction.query.filter_by(id=sold_transaction_id).first()
         if sold_transaction_object:
             if sold_transaction_object not in temp_user.transactions:
@@ -267,8 +241,40 @@ def sell_coin(sold_transaction_id, temp_id, result_queue):
             coin_object = Coin.query.filter_by(symbol=sold_transaction_object.coin_name).first()
             temp_value = coin_num * coin_object.current_value   
             temp_user.card.amount += temp_value       
-            Transaction.query.filter_by(id=sold_transaction_id, user_id=temp_id).delete()
+            Transaction.query.filter_by(id=sold_transaction_id, user_id=current_user_id).delete()
             db.session.commit()
             result_queue.put('Congratulations! Money from the sale:' + str(temp_value))
         else:
             result_queue.put('Transaction not found')
+
+def buy_coin(selected_coin, entered_amount, entered_date, current_user_id, result_queue):
+    with app.app_context():    
+        coin = Coin.query.filter_by(symbol=selected_coin).first()
+        print(selected_coin)
+        print(coin.symbol)
+        print(coin.name)
+        card = Card.query.filter_by(owner_id=current_user_id).first()
+        if coin is not None:
+            vr = 0
+            try:
+                coin = Coin.query.filter_by(symbol=selected_coin).first()
+                vr = coin.current_value
+            except AttributeError:
+                print("Coin not found")
+            if vr == 0:
+                result_queue.put('Coin is worth zero dollars! The transaction will not be executed.')
+                return #redirect(url_for('store_page'))
+            res = float(entered_amount) / vr
+            new_transaction = Transaction(coin_name = selected_coin, user_id = current_user_id, date=entered_date, amount = entered_amount, price = res)
+            if card.amount >= float(entered_amount):
+                card.amount -= float(entered_amount)
+                db.session.add(new_transaction)
+                db.session.commit()
+                result_queue.put('Transaction successful')
+                return #redirect(url_for('profile_page'))
+            else:
+                result_queue.put('Not enough funds')
+                return #redirect(url_for('store_page'))
+        else:
+            result_queue.put('Invalid coin')
+            return #redirect(url_for('store_page'))
