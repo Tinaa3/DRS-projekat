@@ -1,0 +1,9 @@
+flask
+schedule
+requests
+flask_wtf
+wtforms
+flask_sqlalchemy
+flask_bcrypt
+flask_login
+email_validator
