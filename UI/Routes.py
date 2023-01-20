@@ -11,6 +11,7 @@ from flask_login import login_user, logout_user, login_required, current_user
 from flask_login import LoginManager 
 from itertools import groupby
 from operator import attrgetter
+from multiprocessing import Queue, Process
 
 crypto = Crypto()
 login_manager = LoginManager() # Create a Login Manager instance
@@ -92,17 +93,11 @@ def profile_page():
         #table of transactions - 6.
     if request.method=='POST':
         sold_transaction_id = request.form.get('sold_transaction')
-        sold_transaction_object=Transaction.query.filter_by(id=sold_transaction_id).first()
-        if sold_transaction_object:
-            if sold_transaction_object not in current_user.transactions:
-                flash(f'Something went wrong! You don\'t have enough { sold_transaction_object.coin_name } to sell.', category='danger')
-            coin_num = sold_transaction_object.price
-            coin_object = Coin.query.filter_by(symbol=sold_transaction_object.coin_name).first()
-            temp_value = coin_num * coin_object.current_value   
-            current_user.card.amount += temp_value       
-            flash(f'Congratulations! Money from the sale: { temp_value }$', category='success')
-            Transaction.query.filter_by(id=sold_transaction_id, user_id=current_user.id).delete()
-            db.session.commit()
+        result_queue = Queue()
+        p = Process(target=sell_coin, args=(sold_transaction_id, current_user.id, result_queue))
+        p.start()   
+        p.join() #wait for this process to complete
+        flash(result_queue.get())
     
         #table of coins - 7.
     current_transactions = Transaction.query.filter_by(user_id=current_user.id).all()
@@ -167,8 +162,6 @@ def card_page():
             return redirect(url_for('card_page'))
 
     return render_template('card.html', form=form, cards=cards, num_cards=num_cards)
-
-
 
 @app.route('/editprofile', methods=["GET", "POST"])
 @login_required
@@ -261,3 +254,21 @@ def store_page():
 def logout():
     logout_user()
     return redirect(url_for('home_page'))
+
+def sell_coin(sold_transaction_id, temp_id, result_queue):
+    with app.app_context():
+        temp_user = User.query.get(int(temp_id))
+        sold_transaction_object = Transaction.query.filter_by(id=sold_transaction_id).first()
+        if sold_transaction_object:
+            if sold_transaction_object not in temp_user.transactions:
+                result_queue.put('Something went wrong! You don\'t have enough' + sold_transaction_object.coin_name + 'to sell.')
+                return
+            coin_num = sold_transaction_object.price
+            coin_object = Coin.query.filter_by(symbol=sold_transaction_object.coin_name).first()
+            temp_value = coin_num * coin_object.current_value   
+            temp_user.card.amount += temp_value       
+            Transaction.query.filter_by(id=sold_transaction_id, user_id=temp_id).delete()
+            db.session.commit()
+            result_queue.put('Congratulations! Money from the sale:' + str(temp_value))
+        else:
+            result_queue.put('Transaction not found')
