@@ -137,13 +137,15 @@
         <tr>
           <td class="td1">{{coin_name}}</td>
           <td class="td2">{{values.amount}}$</td>
-          <td class="td1">{{values.price}}</td>
+          <td class="td1">{{values.price}}
+            {{coin_name}}
+          </td>
           
             {%if values.profit > 0.0%}
-            <td style="text-align: center;background-color: green;">{{ values.profit }}</td>
+            <td style="text-align: center;background-color: green;">{{"%.4f" %  values.profit }}$</td>
             {% else %}
             
-            <td style="text-align: center;background-color: red;">{{ values.profit }}</td>
+            <td style="text-align: center;background-color: red;">{{"%.4f" %  values.profit }}$</td>
             {% endif%}
             
         </tr>
@@ -153,7 +155,7 @@
     </table>
     <div class="row justify-content-around">
     <div>
-      <p class="pt">(+/-)Total: {{ sum[1] }}</p>
+      <p class="pt">(+/-)Total: {{"%.2f" % sum[1]}}$</p>
       <canvas id="profitChart"  style="width: 300px; height: 300px;"></canvas>
       <script>
         var plusProfit = "{{plus_profit}}";
