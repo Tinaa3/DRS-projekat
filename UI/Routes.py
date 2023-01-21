@@ -1,12 +1,11 @@
 from UI import app, db
 from flask import render_template, redirect, url_for, flash, request
-from Classes.forms import RegisterForm, LoginForm, EditForm, CardForm
+from Classes.forms import RegisterForm, EditForm, CardForm
 from Classes.User import User
 from Classes.Card import Card
 from Classes.Coin import Coin
 from Classes.crypto import Crypto
 from Classes.Transaction import Transaction
-from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, logout_user, login_required, current_user
 from flask_login import LoginManager 
 from itertools import groupby
@@ -14,32 +13,23 @@ from operator import attrgetter
 from multiprocessing import Queue, Process
 
 crypto = Crypto()
-login_manager = LoginManager() # Create a Login Manager instance
-login_manager.login_view = 'home_page' # define the redirection 
-                         # path when login required and we attempt 
-                         # to access without being logged in
-login_manager.init_app(app) # configure it for login
+login_manager = LoginManager() 
+login_manager.login_view = 'home_page' 
+                         
+login_manager.init_app(app) 
 
 @login_manager.user_loader
-def load_user(user_id): #reload user object from the user ID 
-                            #stored in the session
-        # since the user_id is just the primary key of our user 
-        # table, use it in the query for the user
+def load_user(user_id):  
     return User.query.get(int(user_id))
 
 @app.route('/', methods=['GET'])
 @app.route('/home', methods=['GET'])
 def home_page():
-    
-
-    #if request.method=='GET': # if the request is a GET we return the login page
     return render_template('home.html')
 
 @app.route('/', methods=['POST'])   
 @app.route('/home', methods=['POST'])   
 def login_page():  
-    #else: # if the request is POST the we check if the user exist 
-          # and with te right password
     email = request.form.get('email')
     if(email == "" or email.isspace()):
         return redirect(url_for('login_page'))
@@ -52,11 +42,6 @@ def login_page():
     if not user or (user.password_hash != password):
         flash('Please enter valid login information!')
         return redirect(url_for('home_page'))
-    
-        # if the user 
-            #doesn't exist or password is wrong, reload the page
-    # if the above check passes, then we know the user has the 
-    # right credentials
     login_user(user)
     flash(f'Welcome {user.name}!')
     return redirect(url_for('profile_page'))
@@ -104,14 +89,12 @@ def profile_page():
         result_queue = Queue()
         p = Process(target=sell_coin, args=(sold_transaction_id, current_user.id, result_queue))
         p.start()   
-        p.join() #wait for this process to complete
+        p.join() 
         flash(result_queue.get())
     
         #table of coins - 7.
     current_transactions = Transaction.query.filter_by(user_id=current_user.id).all()
-    # Group transactions by coin_name
     transactions_by_coin_name = groupby(sorted(current_transactions, key=attrgetter('coin_name')), attrgetter('coin_name'))
-    # Sum transactions amount and price for each coin_name
     result = {}
     for coin_name, transactions in transactions_by_coin_name:
         result[coin_name] = {'amount': 0, 'price': 0, 'profit': 0}
@@ -154,22 +137,16 @@ def card_page():
         if num_cards >= 1:
             flash(f"Only one credit card can be added")
             return redirect(url_for('card_page'))
-        else:
-            if(form.name.data == "" or form.name.data.isspace()
-                or form.cardnum.data == None or not form.cardnum.data.isnumeric()
-                or form.expdate.data == "" or form.name.data.isspace()
-                or form.seccode.data == None or not form.seccode.data.isnumeric()
-                or form.amount.data == None or not form.amount.data.isnumeric()):
-                return redirect(url_for('card_page'))
-            card = Card(name=form.name.data,
-                        cardNum=form.cardnum.data,
-                        expDate=form.expdate.data,
-                        secCode=form.seccode.data,
-                        amount=form.amount.data,
-                        owner_id=user_id)
-            db.session.add(card)
-            db.session.commit()
-            return redirect(url_for('card_page'))
+        
+        card = Card(name=form.name.data,
+                    cardNum=form.cardnum.data,
+                    expDate=form.expdate.data,
+                    secCode=form.seccode.data,
+                    amount=form.amount.data,
+                    owner_id=user_id)
+        db.session.add(card)
+        db.session.commit()
+        return redirect(url_for('card_page'))
 
     return render_template('card.html', form=form, cards=cards, num_cards=num_cards)
 
@@ -209,7 +186,6 @@ def store_page():
     if not coins:
         for result in results:
             result['quote']['USD']['price'] = '$ ' + "{:.2f}".format(result['quote']['USD']['price'])
-             # Create a Coin object for each coin
             new_coin = Coin(name=result['name'], symbol=result['symbol'],current_value=float(result['quote']['USD']['price'].replace('$','')))
             db.session.add(new_coin)
     
@@ -225,7 +201,7 @@ def store_page():
         if entered_date == '':
             flash('Date!')
             return redirect(url_for('store_page'))
-        if entered_amount == '':
+        if entered_amount == '' :
             flash('Amount!')
             return redirect(url_for('store_page'))
         card = Card.query.filter_by(owner_id=current_user.id).first()
@@ -236,7 +212,7 @@ def store_page():
         result_queue = Queue()
         p = Process(target=buy_coin, args=(selected_coin, entered_amount, entered_date, current_user.id, result_queue))
         p.start()   
-        p.join() #wait for this process to complete
+        p.join() 
         flash(result_queue.get())
         return redirect(url_for('store_page'))
 
@@ -282,7 +258,7 @@ def buy_coin(selected_coin, entered_amount, entered_date, current_user_id, resul
                 print("Coin not found")
             if vr == 0:
                 result_queue.put('Coin is worth zero dollars! The transaction will not be executed.')
-                return #redirect(url_for('store_page'))
+                return 
             res = float(entered_amount) / vr
             new_transaction = Transaction(coin_name = selected_coin, user_id = current_user_id, date=entered_date, amount = entered_amount, price = res)
             if card.amount >= float(entered_amount):
@@ -290,10 +266,10 @@ def buy_coin(selected_coin, entered_amount, entered_date, current_user_id, resul
                 db.session.add(new_transaction)
                 db.session.commit()
                 result_queue.put('Transaction successful')
-                return #redirect(url_for('profile_page'))
+                return 
             else:
                 result_queue.put('Not enough funds')
-                return #redirect(url_for('store_page'))
+                return 
         else:
             result_queue.put('Invalid coin')
-            return #redirect(url_for('store_page'))
+            return 
