@@ -1,13 +1,24 @@
 version: '3'
 services:
+
   server:
-    build: ./
+    build: ./run.py
     ports:
       - 5000:3000
+    links:
+      - db
+    depends_on:
+      - db
+    environment:
+      - run.py
+
   db:
-    image: keinos/sqlite3:latest
+    image: 
+      - sqlite3:../database.db
     volumes:
-      - ./data:/data
 
 volumes:
-  db-data:
+  db:
+    driver: local
+  server:
+    driver: local
