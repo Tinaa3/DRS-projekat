@@ -26,6 +26,7 @@
 {% endfor %}
 
 <br>
+{% if num_cards == 0%}
     <form method="post">
     <div class="container">
         <div class= "signup-content">
@@ -59,7 +60,7 @@
             <br>
             {{ form.submit(class='btn btn-lg form-submit') }}
         </div>
-
+{% endif%}
     </form>
     </div>
 {% endblock %}

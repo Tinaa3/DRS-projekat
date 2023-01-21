@@ -8,6 +8,7 @@
 
 {% block profile %}
 <div class="container">
+    <form method="POST">
     <br> 
     <div class="signup-content">
         <h2>Edit profile</h2>
@@ -52,9 +53,10 @@
     </div>
     <br>
     {{ form.submit(class='btn btn-lg form-submit') }}
-    <p align="center"> 
+    <p style="text-align:center"> 
         Only fill the fields you want to edit!!
     </p>
+</form>
 </div>
 </div>
 {% endblock %}

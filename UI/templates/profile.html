@@ -8,7 +8,7 @@
 <a style="color: rgb(69, 69, 162); font-weight: bold; font-size: 17px">Total:{{ "%.2f" % total }}$ </a>
 {% endif %}
 
-{% if current_user.is_authenticated %}
+{% if current_user.is_authenticated and current_user.card%}
 <p>Your current balance: {{ "%.2f" % current_user.card.amount }}$</p>
 {% endif %}
 
@@ -109,7 +109,7 @@
                 {{transaction.coin_name}}</td>               
               <input type="hidden" id="custId" name="sold_transaction" value="{{ transaction.id }}">
               <td class="td1"> <input type="submit" value="SELL"
-                  class="button-26" onclick="document.getElementById('custId').value= {{transaction.id}} "></td>
+                  class="button-26" onclick="document.getElementById('custId').value = {{ transaction.id }} "></td>
 
             </tr>
           </tbody>

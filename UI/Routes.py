@@ -30,6 +30,8 @@ def load_user(user_id): #reload user object from the user ID
 @app.route('/', methods=['GET'])
 @app.route('/home', methods=['GET'])
 def home_page():
+    
+
     #if request.method=='GET': # if the request is a GET we return the login page
     return render_template('home.html')
 
@@ -80,15 +82,6 @@ def register_page():
 @app.route('/profile', methods=['GET','POST'])
 @login_required
 def profile_page():
-    coins = Coin.query.all()
-    results = crypto.get_top_200()
-    for result in results:
-        result['quote']['USD']['price'] = '$ ' + "{:.2f}".format(result['quote']['USD']['price'])
-         # Create a Coin object for each coin
-        new_coin = Coin(name=result['name'], symbol=result['symbol'],current_value=float(result['quote']['USD']['price'].replace('$','')))
-        db.session.add(new_coin)
-    db.session.commit()
-
         #table of transactions - 6.
     if request.method=='POST':
         sold_transaction_id = request.form.get('sold_transaction')
@@ -132,7 +125,7 @@ def profile_page():
 
     user = User.query.filter_by(id=current_user.id).first()
     transactions = Transaction.query.filter_by(user_id=current_user.id).all()
-    return render_template('profile.html', transactions=transactions, user=user, result=result, sum=sum, total=total, coins=coins, plus_profit=plus_profit, minus_profit=minus_profit)
+    return render_template('profile.html', transactions=transactions, user=user, result=result, sum=sum, total=total,  plus_profit=plus_profit, minus_profit=minus_profit)
 
 @app.route('/card', methods=['GET', 'POST'])
 @login_required
@@ -181,21 +174,22 @@ def edit_page():
     if(form.password1.data == form.password2.data and form.password1.data != "" and form.password2.data != ""):
         userUpdate.password_hash = form.password1.data
     db.session.commit()
-    return render_template('profile.html')
+    return redirect(url_for('profile_page'))
 
 @app.route('/store', methods=['GET','POST'])
 @login_required
 def store_page():
     coins = Coin.query.all()
     results = crypto.get_top_200()
-    for result in results:
-        result['quote']['USD']['price'] = '$ ' + "{:.2f}".format(result['quote']['USD']['price'])
-         # Create a Coin object for each coin
-        new_coin = Coin(name=result['name'], symbol=result['symbol'],current_value=float(result['quote']['USD']['price'].replace('$','')))
-        db.session.add(new_coin)
-
-    db.session.commit()
-   
+    if not coins:
+        for result in results:
+            result['quote']['USD']['price'] = '$ ' + "{:.2f}".format(result['quote']['USD']['price'])
+             # Create a Coin object for each coin
+            new_coin = Coin(name=result['name'], symbol=result['symbol'],current_value=float(result['quote']['USD']['price'].replace('$','')))
+            db.session.add(new_coin)
+    
+        db.session.commit()
+    
     if request.method == 'POST':
         selected_coin = request.form.get('coin-select')
         entered_amount = request.form.get('money-input')
