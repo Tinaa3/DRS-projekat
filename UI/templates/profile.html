@@ -158,15 +158,13 @@
       <p class="pt">(+/-)Total: {{"%.2f" % sum[1]}}$</p>
       <canvas id="profitChart"  style="width: 300px; height: 300px;"></canvas>
       <script>
-        var plusProfit = "{{plus_profit}}";
-        var minusProfit = "{{minus_profit}}";
-        var profit = plusProfit - minusProfit;
-        var loss = minusProfit * -1;
-        var ctx = document.getElementById('profitChart').getContext('2d');
-        var chart = new Chart(ctx, {
+        let profit = "{{plus_profit}}" - "{{minus_profit}}";
+        let loss = "{{minus_profit}}"* -1;
+        let ctx = document.getElementById('profitChart').getContext('2d');
+        let chart = new Chart(ctx, {
             type: 'doughnut',
             data: {
-                labels: ["Loss", "Profit"],
+                labels: ['Profit', 'Loss'],
                 datasets: [{
                     data: [profit,loss],
                     backgroundColor: ['green', 'red'],
