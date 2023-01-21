@@ -20,7 +20,6 @@ class LoginForm(FlaskForm):
     password = PasswordField(label='Password', validators=[DataRequired()])
     submit = SubmitField(label='Login')
 
-
 class CardForm(FlaskForm):
     name = StringField('Cardholder name', validators=[DataRequired(), Length(min=5,max=30)])
     cardnum = StringField('Card number', validators=[DataRequired(), Length(min=13, max=16), Regexp('^[0-9]*$', message='Card number must be numeric')])

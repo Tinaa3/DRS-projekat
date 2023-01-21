@@ -14,8 +14,7 @@ from multiprocessing import Queue, Process
 
 crypto = Crypto()
 login_manager = LoginManager() 
-login_manager.login_view = 'home_page' 
-                         
+login_manager.login_view = 'home_page'            
 login_manager.init_app(app) 
 
 @login_manager.user_loader
@@ -81,7 +80,16 @@ def register_page():
 @app.route('/profile', methods=['GET','POST'])
 @login_required
 def profile_page():
-        #table of transactions - 6.
+    coins = Coin.query.all()
+    results = crypto.get_top_200()
+    if not coins:
+        for result in results:
+            result['quote']['USD']['price'] = '$ ' + "{:.2f}".format(result['quote']['USD']['price'])
+            new_coin = Coin(name=result['name'], symbol=result['symbol'],current_value=float(result['quote']['USD']['price'].replace('$','')))
+            db.session.add(new_coin)
+        db.session.commit()
+
+    #table of transactions - 6.
     if request.method=='POST':
         sold_transaction_id = request.form.get('sold_transaction')
         if(sold_transaction_id == None or not sold_transaction_id.isnumeric()):
@@ -92,7 +100,7 @@ def profile_page():
         p.join() 
         flash(result_queue.get())
     
-        #table of coins - 7.
+    #table of coins - 7.
     current_transactions = Transaction.query.filter_by(user_id=current_user.id).all()
     transactions_by_coin_name = groupby(sorted(current_transactions, key=attrgetter('coin_name')), attrgetter('coin_name'))
     result = {}
@@ -105,7 +113,7 @@ def profile_page():
         current_price = Coin.query.filter_by(symbol=key).first()
         result[key]['profit'] = (current_price.current_value * result[key]['price']) - result[key]['amount']
         
-        #sum of coins - 8.
+    #sum of coins - 8.
     sum=[0, 0]
     total = 0
     for key in result.keys():
@@ -113,7 +121,7 @@ def profile_page():
         sum[1] += result[key]['profit']
         total = sum[0] + sum[1]
 
-        #chart
+    #chart
     plus_profit = 0
     minus_profit = 0
     for key in result.keys():
@@ -133,11 +141,7 @@ def card_page():
     user_id = current_user.id
     cards = Card.query.filter_by(owner_id=user_id).all()
     num_cards = Card.query.filter_by(owner_id=user_id).count()
-    if request.method == 'POST':
-        if num_cards >= 1:
-            flash(f"Only one credit card can be added")
-            return redirect(url_for('card_page'))
-        
+    if request.method == 'POST':        
         card = Card(name=form.name.data,
                     cardNum=form.cardnum.data,
                     expDate=form.expdate.data,
@@ -188,35 +192,34 @@ def store_page():
             result['quote']['USD']['price'] = '$ ' + "{:.2f}".format(result['quote']['USD']['price'])
             new_coin = Coin(name=result['name'], symbol=result['symbol'],current_value=float(result['quote']['USD']['price'].replace('$','')))
             db.session.add(new_coin)
-    
         db.session.commit()
     
-    if request.method == 'POST':
-        selected_coin = request.form.get('coin-select')
-        entered_amount = request.form.get('money-input')
-        entered_date = request.form.get('date-time-input')
-        if entered_date == '' and entered_amount == '':
-            flash('DATE AND AMOUNT')
-            return redirect(url_for('store_page'))
-        if entered_date == '':
-            flash('Date!')
-            return redirect(url_for('store_page'))
-        if entered_amount == '' :
-            flash('Amount!')
-            return redirect(url_for('store_page'))
-        card = Card.query.filter_by(owner_id=current_user.id).first()
-        if card is None:
-            result_queue.put('First add credit card!')
-            return redirect(url_for('card_page'))
-        
-        result_queue = Queue()
-        p = Process(target=buy_coin, args=(selected_coin, entered_amount, entered_date, current_user.id, result_queue))
-        p.start()   
-        p.join() 
-        flash(result_queue.get())
-        return redirect(url_for('store_page'))
+    if request.method == 'GET':
+        return render_template('store.html', results=results, coins=coins)
 
-    return render_template('store.html', results=results, coins=coins)
+    selected_coin = request.form.get('coin-select')
+    entered_amount = request.form.get('money-input')
+    entered_date = request.form.get('date-time-input')
+    if entered_date == '' and entered_amount == '':
+        flash('DATE AND AMOUNT')
+        return redirect(url_for('store_page'))
+    if entered_date == '':
+        flash('Date!')
+        return redirect(url_for('store_page'))
+    if entered_amount == '' :
+        flash('Amount!')
+        return redirect(url_for('store_page'))
+    card = Card.query.filter_by(owner_id=current_user.id).first()
+    if card is None:
+        result_queue.put('First add credit card!')
+        return redirect(url_for('card_page'))
+    
+    result_queue = Queue()
+    p = Process(target=buy_coin, args=(selected_coin, entered_amount, entered_date, current_user.id, result_queue))
+    p.start()   
+    p.join() 
+    flash(result_queue.get())
+    return redirect(url_for('store_page'))   
 
 @app.route('/logout')
 @login_required
@@ -238,16 +241,13 @@ def sell_coin(sold_transaction_id, current_user_id, result_queue):
             temp_user.card.amount += temp_value       
             Transaction.query.filter_by(id=sold_transaction_id, user_id=current_user_id).delete()
             db.session.commit()
-            result_queue.put('Congratulations! Money from the sale:' + str(temp_value))
+            result_queue.put('Congratulations! Money from the sale: ' + str(temp_value) + '$')
         else:
             result_queue.put('Transaction not found')
 
 def buy_coin(selected_coin, entered_amount, entered_date, current_user_id, result_queue):
     with app.app_context():    
         coin = Coin.query.filter_by(symbol=selected_coin).first()
-        print(selected_coin)
-        print(coin.symbol)
-        print(coin.name)
         card = Card.query.filter_by(owner_id=current_user_id).first()
         if coin is not None:
             vr = 0

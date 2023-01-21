@@ -1,8 +1,6 @@
 import Classes.User as User
 from UI import db
 
-
-
 class Card(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(length=30), nullable = False)

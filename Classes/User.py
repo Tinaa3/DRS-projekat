@@ -16,6 +16,3 @@ class User(db.Model, UserMixin):
     password_hash = db.Column(db.String(length=60), nullable=False)
     transactions = db.relationship('Transaction', backref='user', lazy=True)
     card = db.relationship('Card', uselist=False, back_populates='owner')
-
-
-    

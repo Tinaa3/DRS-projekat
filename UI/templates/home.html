@@ -8,9 +8,8 @@
   <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
     integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
   <link rel="stylesheet">
-
- 
 </head>
+
 <style>
   body {
     background-image: linear-gradient(135deg, #7a6fe0 10%, #1b1373 100%);
@@ -129,7 +128,7 @@
     border-bottom: 2px solid #B0B3B9;
   }
 
-  
+
   label {
     display: block;
     position: relative;
@@ -155,27 +154,28 @@
     cursor: pointer;
     background: #70F570;
   }
+
   .button-26 {
-  appearance: button;
-  background-color: #1652F0;
-  border: 1px solid #1652F0;
-  border-radius: 4px;
-  box-sizing: border-box;
-  color: #FFFFFF;
-  cursor: pointer;
-  font-size: 12px;
-  line-height: 1.15;
-  overflow: visible;
-  padding: 10px 14px;
-  position: relative;
-  text-align: center;
-  text-transform: none;
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
-}
-  
+    appearance: button;
+    background-color: #1652F0;
+    border: 1px solid #1652F0;
+    border-radius: 4px;
+    box-sizing: border-box;
+    color: #FFFFFF;
+    cursor: pointer;
+    font-size: 12px;
+    line-height: 1.15;
+    overflow: visible;
+    padding: 10px 14px;
+    position: relative;
+    text-align: center;
+    text-transform: none;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+  }
 </style>
+
 <body>
   <div class="box-form">
     <div class="left">
@@ -188,39 +188,39 @@
       <p>Don't have an account? <a href="{{ url_for('register_page') }}">Create Your Account</a> it takes less than a
         minute</p>
       <div class="inputs">
-      
+
         {% block content %}
-<div class="column is-4 is-offset-4">
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-        <div class="notification is-danger">
-            {{ messages[0] }}<br> 
+        <div class="column is-4 is-offset-4">
+          {% with messages = get_flashed_messages() %}
+          {% if messages %}
+          <div class="notification is-danger">
+            {{ messages[0] }}<br>
+          </div>
+          {% endif %}
+          {% endwith %}
+          <div class="box">
+            <form method="POST" action="">
+              <div class="field">
+                <div class="control">
+                  <input class="input is-large" type="email" name="email" placeholder="Your Email" autofocus="">
+                </div>
+              </div>
+              <div class="field">
+                <div class="control">
+                  <input class="input is-large" type="password" name="password" placeholder="Your Password">
+                </div>
+              </div>
+              <br>
+
+              <button class="button-26"> Login</button>
+            </form>
+          </div>
         </div>
-    {% endif %}
-    {% endwith %}
-    <div class="box">
-        <form method="POST" action="">
-            <div class="field">
-                <div class="control">
-                    <input class="input is-large" type="email" name="email" placeholder="Your Email" autofocus="">
-                </div>
-            </div>
-            <div class="field">
-                <div class="control">
-                    <input class="input is-large" type="password" name="password" placeholder="Your Password">
-                </div>
-            </div>
-            <br>
-            
-            <button class="button-26"> Login</button>
-        </form>
-    </div>
-</div>
-{% endblock %}
+        {% endblock %}
       </div>
-      
-  </div>
-    
+
+    </div>
+
 </body>
 
 </html>

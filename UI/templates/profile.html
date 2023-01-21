@@ -22,14 +22,9 @@
 {% endblock %}
 
 {% block profile %}
-
-
-
-
 {% if transactions == [] %}
 <a class="active" style="color: white;" href="{{ url_for('store_page') }}">
   <button class="button">
-
     <span class="button__text">
       <span>G</span><span>E</span>T</span><span>
     </span><span>S</span><span>T</span><span>A</span><span>R</span><span>T</span><span>E</span><span>D</span>
@@ -74,22 +69,16 @@
         <path d="M148.16,343.22a6,6,0,0,0-6,6v92a6,6,0,0,0,12,0v-92A6,6,0,0,0,148.16,343.22Z" fill="#323c44" />
       </g>
     </svg>
-
   </button>
 </a>
-
 {% else %}
 <br>
 <div class="row justify-content-around">
-
-
   <div class="row justify-content-around">
-    <div class="col-10" >
+    <div class="col-10">
       <form method="POST">
         <table class="table" style="width: 700px; border: 2px;">
-
-          <thead class="thead-dark" >
-
+          <thead class="thead-dark">
             <tr>
               <th scope="col">Coin Name</th>
               <th scope="col">Purchase Date</th>
@@ -101,90 +90,80 @@
           {% for transaction in transactions %}
           <tbody>
             <tr>
-
               <td class="td1">{{transaction.coin_name}}</td>
               <td class="td2">{{transaction.date}}</td>
               <td class="td1">{{transaction.amount}}$</td>
               <td class="td2">{{transaction.price}}
-                {{transaction.coin_name}}</td>               
+                {{transaction.coin_name}}</td>
               <input type="hidden" id="custId" name="sold_transaction" value="{{ transaction.id }}">
-              <td class="td1"> <input type="submit" value="SELL"
-                  class="button-26" onclick="document.getElementById('custId').value = {{ transaction.id }} "></td>
-
+              <td class="td1"> <input type="submit" value="SELL" class="button-26"
+                  onclick="document.getElementById('custId').value = {{ transaction.id }} "></td>
             </tr>
           </tbody>
           {% endfor %}
         </table>
       </form>
-     
     </div>
   </div>
   <br><br>
   <div class="col-5">
     <table class="table" style="width: 600px; border: 2px;">
-
-      <thead class=" thead thead-dark" >
-    
+      <thead class=" thead thead-dark">
         <tr>
-          <th scope="col" >Coin Name</th>
-          <th scope="col" >Price</th>
-          <th scope="col" >Amount of coins</th>
-          <th scope="col" >+/-</th>
+          <th scope="col">Coin Name</th>
+          <th scope="col">Price</th>
+          <th scope="col">Amount of coins</th>
+          <th scope="col">+/-</th>
         </tr>
       </thead>
       {% for coin_name, values in result.items() %}
-        <tbody>
+      <tbody>
         <tr>
           <td class="td1">{{coin_name}}</td>
           <td class="td2">{{values.amount}}$</td>
           <td class="td1">{{values.price}}
             {{coin_name}}
           </td>
-          
-            {%if values.profit > 0.0%}
-            <td style="text-align: center;background-color: green;">{{"%.4f" %  values.profit }}$</td>
-            {% else %}
-            
-            <td style="text-align: center;background-color: red;">{{"%.4f" %  values.profit }}$</td>
-            {% endif%}
-            
+          {%if values.profit > 0.0%}
+            <td style="text-align: center;background-color: green;">{{"%.4f" % values.profit }}$</td>
+          {% else %}
+            <td style="text-align: center;background-color: red;">{{"%.4f" % values.profit }}$</td>
+          {% endif%}
         </tr>
       </tbody>
       {% endfor %}
-    
+
     </table>
     <div class="row justify-content-around">
-    <div>
-      <p class="pt">(+/-)Total: {{"%.2f" % sum[1]}}$</p>
-      <canvas id="profitChart"  style="width: 300px; height: 300px;"></canvas>
-      <script>
-        let profit = "{{plus_profit}}" - "{{minus_profit}}";
-        let loss = "{{minus_profit}}"* -1;
-        let ctx = document.getElementById('profitChart').getContext('2d');
-        let chart = new Chart(ctx, {
+      <div>
+        <p class="pt">(+/-)Total: {{"%.2f" % sum[1]}}$</p>
+        <canvas id="profitChart" style="width: 300px; height: 300px;"></canvas>
+        <script>
+          let profit = "{{plus_profit}}" - "{{minus_profit}}";
+          let loss = "{{minus_profit}}" * -1;
+          let ctx = document.getElementById('profitChart').getContext('2d');
+          let chart = new Chart(ctx, {
             type: 'doughnut',
             data: {
-                labels: ['Profit', 'Loss'],
-                datasets: [{
-                    data: [profit,loss],
-                    backgroundColor: ['green', 'red'],
-                    borderWidth: 1
-                }]
+              labels: ['Profit', 'Loss'],
+              datasets: [{
+                data: [profit, loss],
+                backgroundColor: ['green', 'red'],
+                borderWidth: 1
+              }]
             },
             options: {
-        scales: {
-            y: {
-                beginAtZero: true
+              scales: {
+                y: {
+                  beginAtZero: true
+                }
+              }
             }
-        }
-    }
-        });
-    </script>
-    </div>
-    
-  </div>
-</div>
+          });
+        </script>
+      </div>
 
+    </div>
+  </div>
   {% endif%}
-  
   {% endblock %}
