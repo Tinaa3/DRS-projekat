@@ -124,7 +124,7 @@
           <td class="td1">{{values.price}}
             {{coin_name}}
           </td>
-          {%if values.profit > 0.0%}
+          {%if values.profit >= 0.0%}
             <td style="text-align: center;background-color: green;">{{"%.4f" % values.profit }}$</td>
           {% else %}
             <td style="text-align: center;background-color: red;">{{"%.4f" % values.profit }}$</td>
